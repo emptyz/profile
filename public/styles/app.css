@@ -1,0 +1,410 @@
+/* Hakhagi — Typography-first, anti-slop */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #F1F5F9;
+  --surface: #FFFFFF;
+  --surface-hover: #F8FAFC;
+  --border: #E2E8F0;
+  --text: #0F172A;
+  --text-muted: #64748B;
+  --text-subtle: #94A3B8;
+  --primary: #1E3A5F;
+  --primary-hover: #2A4A6F;
+  --primary-soft: rgba(30, 58, 95, 0.08);
+  --accent: #C8A96E;
+  --accent-soft: rgba(200, 169, 110, 0.1);
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+  --shadow: 0 1px 3px 0 rgba(0,0,0,0.06);
+  --shadow-card: 0 1px 4px 0 rgba(0,0,0,0.08);
+  --radius: 12px;
+  --radius-sm: 8px;
+}
+
+.dark {
+  --bg: #0B1120;
+  --surface: #131B2E;
+  --surface-hover: #1A2540;
+  --border: #1E293B;
+  --text: #E2E8F0;
+  --text-muted: #94A3B8;
+  --text-subtle: #64748B;
+  --primary: #C8A96E;
+  --primary-hover: #D4B683;
+  --primary-soft: rgba(200, 169, 110, 0.1);
+  --accent: #1E3A5F;
+  --accent-soft: rgba(30, 58, 95, 0.15);
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.3);
+  --shadow: 0 1px 3px rgba(0,0,0,0.3);
+  --shadow-card: 0 1px 4px rgba(0,0,0,0.4);
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  padding-bottom: env(safe-area-inset-bottom);
+  min-height: 100vh;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Arabic font */
+.font-arabic {
+  font-family: 'Noto Naskh Arabic', 'Amiri', 'Traditional Arabic', 'Scheherazade New', 'Uthmanic Hafs', serif;
+  font-weight: 400;
+  line-height: 2.1;
+  direction: rtl;
+  font-feature-settings: 'kern' 1, 'liga' 1, 'calt' 1;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Card */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+  padding: 16px;
+  overflow: hidden;
+  transition: box-shadow 200ms ease, border-color 200ms ease, transform 200ms ease;
+}
+
+.card-hover { cursor: pointer; }
+.card-hover:hover {
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  border-color: var(--primary);
+  transform: translateY(-1px);
+}
+
+.dark .card-hover:hover {
+  box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+}
+
+/* Badge */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 10px;
+  border-radius: 100px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  background: var(--surface-hover);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  line-height: 1.4;
+}
+
+.badge-primary {
+  background: var(--primary);
+  color: white;
+  border: none;
+}
+
+/* Bottom Nav */
+nav {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-around;
+  padding: 6px 0 calc(6px + env(safe-area-inset-bottom));
+  z-index: 50;
+}
+
+nav button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  background: none;
+  border: none;
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--text-subtle);
+  cursor: pointer;
+  padding: 6px 14px;
+  border-radius: var(--radius-sm);
+  transition: color 150ms ease, background 150ms ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+nav button:hover { color: var(--text-muted); }
+
+nav button.active {
+  color: var(--primary);
+  background: var(--primary-soft);
+}
+
+nav button i { width: 20px; height: 20px; }
+
+/* Container */
+#content {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 20px 20px 88px;
+}
+
+/* Segmented control active */
+.font-size-btn { color: var(--text-muted); background: var(--surface-hover); }
+.font-size-btn.active { color: white; background: var(--primary); border-color: var(--primary); }
+.dark .font-size-btn.active { color: #0B1120; background: var(--primary); }
+
+/* Note editor */
+.note-editor {
+  margin-top: 12px;
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-hover);
+  border: 1px solid var(--border);
+}
+.note-editor textarea {
+  width: 100%;
+  font-family: inherit;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+.note-editor textarea:focus { outline: 2px solid var(--primary); outline-offset: -1px; }
+.btn-soft {
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-muted);
+  transition: all 150ms;
+}
+.btn-soft:hover { background: var(--border); }
+.btn-primary {
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  background: var(--primary);
+  color: white;
+  transition: all 150ms;
+}
+.dark .btn-primary { color: #0B1120; }
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--border);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Typography scale — adjustable via data-font-size */
+:root { --fs: 1; }
+
+body[data-font-size="small"] { --fs: 0.875; }
+body[data-font-size="large"] { --fs: 1.125; }
+
+.text-xs { font-size: calc(0.75rem * var(--fs)); line-height: 1.4; }
+.text-sm { font-size: calc(0.875rem * var(--fs)); line-height: 1.5; }
+.text-base { font-size: calc(1rem * var(--fs)); line-height: 1.6; }
+.text-lg { font-size: calc(1.125rem * var(--fs)); line-height: 1.5; }
+.text-xl { font-size: calc(1.25rem * var(--fs)); line-height: 1.4; }
+.text-2xl { font-size: calc(1.5rem * var(--fs)); line-height: 1.3; }
+.text-3xl { font-size: calc(1.875rem * var(--fs)); line-height: 1.2; }
+.text-4xl { font-size: calc(2.25rem * var(--fs)); line-height: 1.1; }
+
+/* Quran & Hadits text (not affected by font scale) */
+
+.font-mono {
+  font-family: 'SF Mono', 'Consolas', 'Liberation Mono', monospace;
+  font-variant-numeric: tabular-nums;
+}
+.font-medium { font-weight: 500; }
+.font-semibold { font-weight: 600; }
+.font-bold { font-weight: 700; }
+
+/* Spacing system (8px grid) */
+.space-y-2 > * + * { margin-top: 8px; }
+.space-y-3 > * + * { margin-top: 12px; }
+.space-y-4 > * + * { margin-top: 16px; }
+.space-y-5 > * + * { margin-top: 20px; }
+.space-y-6 > * + * { margin-top: 24px; }
+
+/* Flex & Grid */
+.flex { display: flex; }
+.items-center { align-items: center; }
+.items-end { align-items: flex-end; }
+.justify-between { justify-content: space-between; }
+.justify-center { justify-content: center; }
+.gap-1 { gap: 4px; }
+.gap-2 { gap: 8px; }
+.gap-2\\.5 { gap: 10px; }
+.gap-3 { gap: 12px; }
+.gap-4 { gap: 16px; }
+
+.grid { display: grid; }
+.grid-cols-2 { grid-template-columns: repeat(2, 1fr); }
+.grid-cols-3 { grid-template-columns: repeat(3, 1fr); }
+
+/* Borders */
+.border-t { border-top: 1px solid var(--border); }
+.border-b { border-bottom: 1px solid var(--border); }
+.border-none { border: none; }
+
+/* Utilities */
+.rounded-xl { border-radius: var(--radius); }
+.rounded-lg { border-radius: var(--radius-sm); }
+.rounded-full { border-radius: 9999px; }
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+.truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.leading-snug { line-height: 1.4; }
+.leading-relaxed { line-height: 1.625; }
+.leading-loose { line-height: 1.8; }
+.tracking-wide { letter-spacing: 0.025em; }
+.tracking-wider { letter-spacing: 0.05em; }
+.uppercase { text-transform: uppercase; }
+.transition { transition: all 150ms ease; }
+.opacity-40 { opacity: 0.4; }
+.opacity-60 { opacity: 0.6; }
+
+/* Spacing helpers */
+.w-full { width: 100%; }
+.p-3 { padding: 12px; }
+.p-4 { padding: 16px; }
+.p-5 { padding: 20px; }
+.px-3 { padding-left: 12px; padding-right: 12px; }
+.px-4 { padding-left: 16px; padding-right: 16px; }
+.px-5 { padding-left: 20px; padding-right: 20px; }
+.py-2 { padding-top: 8px; padding-bottom: 8px; }
+.py-2\\.5 { padding-top: 10px; padding-bottom: 10px; }
+.py-3 { padding-top: 12px; padding-bottom: 12px; }
+.py-4 { padding-top: 16px; padding-bottom: 16px; }
+.mb-2 { margin-bottom: 8px; }
+.mb-3 { margin-bottom: 12px; }
+.mb-4 { margin-bottom: 16px; }
+.mt-1 { margin-top: 4px; }
+.mt-2 { margin-top: 8px; }
+.mt-3 { margin-top: 12px; }
+
+/* Dzikir tabs */
+.tab-btn {
+  flex: 1;
+  padding: 12px 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-align: center;
+  color: var(--text-subtle);
+  border: none;
+  border-bottom: 2px solid transparent;
+  background: none;
+  cursor: pointer;
+  transition: color 150ms, border-color 150ms;
+}
+.tab-btn:hover { color: var(--text-muted); }
+.tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
+
+/* Dzikir card padding */
+.dzikir-card { padding: 16px; }
+
+/* Counter disabled */
+.counter-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* Kategori label */
+.kat-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--accent);
+}
+
+
+/* Search input */
+.search-input {
+  width: 100%;
+  padding: 11px 14px;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 0.875rem;
+  font-family: inherit;
+  color: var(--text);
+  outline: none;
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+.search-input::placeholder { color: var(--text-subtle); }
+.search-input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-soft);
+}
+
+/* ============================================================
+   THEME: Warp (NeedMCP) — warm cream editorial
+   Applied via body.theme-warp. Default Hakhagi theme = no class.
+   ============================================================ */
+.theme-warp {
+  --bg: #faf9f6;
+  --surface: #ffffff;
+  --surface-hover: #f1efea;
+  --border: #e8e6e0;
+  --text: #1a1a18;
+  --text-muted: #5a5a58;
+  --text-subtle: #9a9997;
+  --primary: #1E3A5F;          /* navy identity retained */
+  --primary-hover: #2A4A6F;
+  --primary-soft: rgba(30, 58, 95, 0.08);
+  --accent: #C8A96E;           /* gold mapped from taupe */
+  --accent-soft: rgba(200, 169, 110, 0.12);
+}
+
+.theme-warp.dark {
+  --bg: #0e0e0d;
+  --surface: #161615;
+  --surface-hover: #1a1a19;
+  --border: rgba(226, 226, 226, 0.08);
+  --text: #faf9f6;
+  --text-muted: #afaeac;
+  --text-subtle: #868584;
+  --primary: #C8A96E;          /* gold in dark, like Hakhagi */
+  --primary-hover: #D4B683;
+  --primary-soft: rgba(200, 169, 110, 0.12);
+  --accent: #1E3A5F;
+  --accent-soft: rgba(30, 58, 95, 0.18);
+}
+
+/* Warp: more generous card padding (editorial pacing) */
+.theme-warp .card { padding: 20px; }
+@media (min-width: 480px) {
+  .theme-warp .card { padding: 24px; }
+}
+
+/* Theme picker button (Settings) */
+.theme-btn {
+  color: var(--text-muted);
+  background: var(--surface-hover);
+  border: 1px solid var(--border);
+}
+.theme-btn.active {
+  color: white;
+  background: var(--primary);
+  border-color: var(--primary);
+}
+.theme-warp.dark .theme-btn.active { color: #0e0e0d; }
