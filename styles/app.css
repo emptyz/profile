@@ -408,3 +408,59 @@ body[data-font-size="large"] { --fs: 1.125; }
   border-color: var(--primary);
 }
 .theme-warp.dark .theme-btn.active { color: #0e0e0d; }
+
+/* ═══════════════════════════════════════
+   Additional UI — Sholat, Quran, Hadits
+   ═══════════════════════════════════════ */
+
+.sholat-time-box {
+  text-align: center; padding: 14px 6px; border-radius: 10px;
+  background: var(--surface-hover); border: 1px solid var(--border);
+  position: relative;
+}
+.sholat-time-box .label { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+.sholat-time-box .time { font-size: calc(1.3rem * var(--fs)); font-weight: 600; color: var(--text); direction: ltr; }
+.sholat-time-box .time.highlight { color: var(--primary); }
+.sholat-time-box .remaining { font-size: 0.6rem; color: var(--accent); margin-top: 2px; font-weight: 500; }
+.sholat-time-box.active { border-color: var(--primary); background: var(--primary-soft); }
+
+.month-table { width: 100%; border-collapse: collapse; font-size: calc(0.7rem * var(--fs)); }
+.month-table th { padding: 6px 2px; text-align: center; color: var(--text-subtle); font-weight: 500; font-size: 0.65rem; border-bottom: 1px solid var(--border); }
+.month-table td { padding: 6px 2px; text-align: center; vertical-align: top; border-bottom: 1px solid var(--border); }
+.month-table td.today { background: var(--primary-soft); border-radius: 8px; }
+.month-table td.active .day-num { font-weight: 600; color: var(--primary); }
+.month-table .day-num { font-size: calc(0.8rem * var(--fs)); font-weight: 500; }
+.month-table .day-prayer { font-size: 0.55rem; color: var(--text-subtle); margin-top: 1px; }
+
+.surah-item { display: flex; align-items: center; gap: 12px; padding: 14px; border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.15s; }
+.surah-item:last-child { border-bottom: none; }
+.surah-item:hover { background: var(--surface-hover); }
+.surah-num { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; background: var(--primary-soft); border-radius: 50%; font-size: 0.75rem; font-weight: 600; color: var(--primary); flex-shrink: 0; }
+.surah-name { font-weight: 600; font-size: calc(0.9rem * var(--fs)); }
+
+.ayat-arab { font-family: 'Noto Naskh Arabic', 'Amiri', serif; font-size: calc(1.5rem * var(--fs)); line-height: 2.2; text-align: right; direction: rtl; }
+.ayat-latin { font-style: italic; color: var(--text-subtle); }
+.ayat-terj { font-size: calc(0.85rem * var(--fs)); color: var(--text-muted); line-height: 1.7; }
+
+.hadits-book { display: flex; align-items: center; justify-content: space-between; padding: 14px; border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.15s; }
+.hadits-book:last-child { border-bottom: none; }
+.hadits-book:hover { background: var(--surface-hover); }
+.hadits-arab { font-family: 'Noto Naskh Arabic', 'Amiri', serif; font-size: calc(1.2rem * var(--fs)); line-height: 2; text-align: right; direction: rtl; }
+.hadits-terj { font-size: calc(0.85rem * var(--fs)); color: var(--text-muted); line-height: 1.7; }
+
+.dzikir-card { padding: 16px; }
+.dzikir-card .dzikir-arab { font-family: 'Noto Naskh Arabic', 'Amiri', serif; font-size: calc(1.2rem * var(--fs)); line-height: 2; text-align: right; direction: rtl; margin-bottom: 8px; }
+.counter-btn { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--border); background: var(--surface); color: var(--primary); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
+.counter-btn:hover:not(:disabled) { background: var(--primary-soft); border-color: var(--primary); }
+.counter-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+.search-input { width: 100%; padding: 11px 14px; background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius); font-size: 0.875rem; font-family: inherit; color: var(--text); outline: none; transition: border-color 150ms, box-shadow 150ms; }
+.search-input::placeholder { color: var(--text-subtle); }
+.search-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft); }
+
+.btn-soft { padding: 8px 16px; border-radius: var(--radius-sm); font-size: 0.8rem; font-weight: 500; cursor: pointer; border: 1px solid var(--border); background: var(--surface); color: var(--text-muted); transition: all 150ms; }
+.btn-soft:hover { background: var(--border); }
+
+.font-size-btn { padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border); cursor: pointer; font-size: 0.8rem; color: var(--text-muted); background: var(--surface-hover); transition: all 0.15s; }
+.font-size-btn.active { color: white; background: var(--primary); border-color: var(--primary); }
+.dark .font-size-btn.active { color: #0B1120; }

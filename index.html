@@ -14,226 +14,222 @@
   <script src="https://unpkg.com/alpinejs@3.14.8" defer></script>
   <script src="https://unpkg.com/@alpinejs/persist@3.14.8" defer></script>
   <script src="https://unpkg.com/lucide@0.344.0/dist/umd/lucide.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Naskh+Arabic:wght@400;500;600&family=Amiri:wght@400;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/styles/app.css" />
-  <style>
-    .sholat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
-    .sholat-item { text-align: center; padding: 14px 8px; border-radius: 8px; background: var(--surface-hover); border: 1px solid var(--border); }
-    .sholat-item .time { font-size: calc(1.5rem * var(--fs)); font-weight: 600; color: var(--text); direction: ltr; }
-    .sholat-item .label { font-size: calc(0.7rem * var(--fs)); color: var(--text-muted); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
-    .sholat-today { text-align: center; padding: 20px; margin-bottom: 16px; background: var(--primary-soft); border-radius: 12px; border: 1px solid var(--border); }
-    .sholat-today .date { font-size: calc(0.8rem * var(--fs)); color: var(--text-muted); }
-    .sholat-today .city { font-size: calc(0.7rem * var(--fs)); color: var(--text-subtle); margin-top: 2px; }
-    .surah-item { display: flex; align-items: center; gap: 12px; padding: 12px; border-bottom: 1px solid var(--border); cursor: pointer; }
-    .surah-item:hover { background: var(--surface-hover); }
-    .surah-num { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; background: var(--primary-soft); border-radius: 50%; font-size: 0.75rem; font-weight: 600; color: var(--primary); flex-shrink: 0; }
-    .surah-name { font-weight: 600; font-size: calc(0.9rem * var(--fs)); }
-    .surah-meta { font-size: calc(0.7rem * var(--fs)); color: var(--text-muted); }
-    .surah-arti { font-size: calc(0.75rem * var(--fs)); color: var(--text-subtle); }
-    .ayat-card { padding: 20px 16px; border-bottom: 1px solid var(--border); }
-    .ayat-card:last-child { border-bottom: none; }
-    .ayat-arab { font-family: 'Noto Naskh Arabic', 'Amiri', serif; font-size: calc(1.4rem * var(--fs)); line-height: 2.2; text-align: right; direction: rtl; margin-bottom: 8px; }
-    .ayat-terj { font-size: calc(0.85rem * var(--fs)); color: var(--text-muted); line-height: 1.7; }
-    .ayat-num { font-size: calc(0.65rem * var(--fs)); color: var(--text-subtle); font-family: monospace; margin-bottom: 4px; }
-    .back-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); color: var(--text-muted); cursor: pointer; font-size: 0.8rem; font-weight: 500; margin-bottom: 12px; }
-    .back-btn:hover { background: var(--surface-hover); }
-    .hadits-book { display: flex; align-items: center; justify-content: space-between; padding: 14px; border-bottom: 1px solid var(--border); cursor: pointer; }
-    .hadits-book:hover { background: var(--surface-hover); }
-    .hadits-book .name { font-weight: 600; font-size: calc(0.9rem * var(--fs)); }
-    .hadits-book .count { font-size: 0.75rem; color: var(--text-subtle); }
-    .hadits-card { padding: 16px; border-bottom: 1px solid var(--border); }
-    .hadits-card:last-child { border-bottom: none; }
-    .hadits-arab { font-family: 'Noto Naskh Arabic', 'Amiri', serif; font-size: calc(1.1rem * var(--fs)); line-height: 2; text-align: right; direction: rtl; margin-bottom: 8px; }
-    .hadits-terj { font-size: calc(0.85rem * var(--fs)); color: var(--text-muted); line-height: 1.7; }
-    .hadits-meta { font-size: calc(0.65rem * var(--fs)); color: var(--text-subtle); margin-top: 6px; display: flex; gap: 8px; }
-    .dzikir-group { margin-bottom: 24px; }
-    .dzikir-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 10px; }
-    .dzikir-arab { font-family: 'Noto Naskh Arabic', 'Amiri', serif; font-size: calc(1.1rem * var(--fs)); line-height: 2; text-align: right; direction: rtl; margin-bottom: 6px; }
-    .dzikir-terj { font-size: calc(0.8rem * var(--fs)); color: var(--text-muted); margin-bottom: 8px; }
-    .dzikir-counter { display: flex; align-items: center; gap: 12px; justify-content: center; margin-top: 8px; }
-    .counter-btn { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--border); background: var(--surface); color: var(--primary); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1rem; font-weight: 600; }
-    .counter-btn:hover { background: var(--primary-soft); }
-    .counter-num { font-size: 1.2rem; font-weight: 600; color: var(--text); min-width: 24px; text-align: center; font-family: monospace; }
-    .counter-target { font-size: 0.7rem; color: var(--text-subtle); }
-    .dzikir-ref { font-size: 0.65rem; color: var(--accent); margin-top: 4px; }
-    .search-res { max-height: 400px; overflow-y: auto; }
-    .loading-spinner { display: flex; align-items: center; justify-content: center; padding: 40px; }
-    .error-msg { text-align: center; padding: 40px 20px; color: var(--text-muted); font-size: 0.9rem; }
-    @media (max-width: 400px) {
-      .sholat-grid { gap: 6px; }
-      .sholat-item { padding: 10px 4px; }
-      .sholat-item .time { font-size: calc(1.2rem * var(--fs)); }
-    }
-  </style>
 </head>
-<body x-data="hakhagiApp()" x-init="init()" :class="{ 'dark': darkMode, 'theme-warp': theme==='warp' }" :data-font-size="fontSize">
+<body x-data="hakhagiApp()" x-init="init()"
+  :class="{ 'dark': darkMode, 'theme-warp': theme==='warp' }"
+  :data-font-size="fontSize">
+
   <main id="content">
+    <!-- ═══ SHOLAT ═══ -->
     <template x-if="activeTab === 'sholat'">
-      <div>
-        <div class="flex items-center justify-between mb-4">
-          <h2 class="text-xl font-semibold">Jadwal Sholat</h2>
-          <span class="badge">Solo</span>
+      <div class="space-y-4">
+        <div class="card">
+          <div class="flex items-center justify-between mb-3">
+            <div>
+              <div class="text-sm font-semibold text-muted">☾ Jadwal Sholat</div>
+              <div class="text-xs opacity-60" x-text="todayDate"></div>
+            </div>
+            <span class="badge">Solo</span>
+          </div>
+          <template x-if="sholatLoading"><div class="flex items-center justify-center py-4"><div class="spinner"></div></div></template>
+          <template x-if="!sholatLoading && sholatToday">
+            <div>
+              <div class="grid grid-cols-2 gap-2">
+                <template x-for="(w, i) in sholatTimes" :key="w.key">
+                  <div class="sholat-time-box" :class="{ 'active': i === 6 }" :style="i === 6 ? 'border-color:var(--primary);background:var(--primary-soft)' : ''">
+                    <div class="label" x-text="w.label"></div>
+                    <div class="time" :class="{ 'highlight': i === 6 }" x-text="sholatToday[w.key] || '--:--'"></div>
+                    <div class="remaining" x-show="i === nextPrayerIdx && nextRemaining" x-text="nextRemaining"></div>
+                  </div>
+                </template>
+              </div>
+              <div class="flex justify-between mt-3 text-xs opacity-60">
+                <span>Imsak: <strong x-text="sholatToday.imsak"></strong></span>
+                <span>Terbit: <strong x-text="sholatToday.terbit"></strong></span>
+                <span>Dhuha: <strong x-text="sholatToday.dhuha"></strong></span>
+              </div>
+            </div>
+          </template>
         </div>
-        <template x-if="sholatLoading"><div class="loading-spinner"><div class="spinner"></div></div></template>
-        <template x-if="!sholatLoading && sholatError">
-          <div class="error-msg">
-            <p>Gagal memuat jadwal sholat</p>
-            <p class="text-xs mt-2 opacity-60" x-text="sholatError"></p>
+
+        <div class="card">
+          <div class="flex items-center justify-between mb-3">
+            <div class="text-sm font-semibold">Kalender Bulanan</div>
+            <span class="text-xs opacity-60" x-text="currentMonth"></span>
           </div>
-        </template>
-        <template x-if="!sholatLoading && sholatToday">
-          <div class="sholat-today">
-            <div class="date" x-text="sholatToday.tanggal"></div>
-            <div class="city">KOTA SURAKARTA</div>
-          </div>
-          <div class="sholat-grid">
-            <div class="sholat-item"><div class="time" x-text="sholatToday.imsak"></div><div class="label">Imsak</div></div>
-            <div class="sholat-item"><div class="time" x-text="sholatToday.subuh"></div><div class="label">Subuh</div></div>
-            <div class="sholat-item"><div class="time" x-text="sholatToday.terbit"></div><div class="label">Terbit</div></div>
-            <div class="sholat-item"><div class="time" x-text="sholatToday.dhuha"></div><div class="label">Dhuha</div></div>
-            <div class="sholat-item"><div class="time" x-text="sholatToday.dzuhur"></div><div class="label">Dzuhur</div></div>
-            <div class="sholat-item"><div class="time" x-text="sholatToday.ashar"></div><div class="label">Ashar</div></div>
-            <div class="sholat-item" style="border-color:var(--primary);background:var(--primary-soft)"><div class="time" style="color:var(--primary)" x-text="sholatToday.maghrib"></div><div class="label">Maghrib</div></div>
-            <div class="sholat-item"><div class="time" x-text="sholatToday.isya"></div><div class="label">Isya</div></div>
-          </div>
-        </template>
-        <template x-if="!sholatLoading && sholatMonth.length > 0">
-          <div class="mt-4">
-            <h3 class="text-sm font-semibold mb-3 opacity-60">Kalender Bulanan</h3>
-            <table style="width:100%;font-size:calc(0.7rem * var(--fs));border-collapse:collapse">
-              <thead><tr style="color:var(--text-subtle);border-bottom:1px solid var(--border)">
-                <th style="padding:6px 4px;text-align:left">Tgl</th>
-                <th style="padding:6px 4px">Imsak</th><th style="padding:6px 4px">Subuh</th><th style="padding:6px 4px">Dzuhur</th><th style="padding:6px 4px">Ashar</th><th style="padding:6px 4px">Maghrib</th><th style="padding:6px 4px">Isya</th>
+          <div style="overflow-x:auto">
+            <table class="month-table">
+              <thead><tr>
+                <th>Mg</th><th>Sn</th><th>Sl</th><th>Rb</th><th>Km</th><th>Jm</th><th>Sb</th>
               </tr></thead>
               <tbody>
-                <template x-for="d in sholatMonth" :key="d.date">
-                  <tr style="border-bottom:1px solid var(--border);" :style="d.date === sholatToday?.date ? 'background:var(--primary-soft);font-weight:600' : ''">
-                    <td style="padding:5px 4px" x-text="d.tanggal.split(', ')[1]?.slice(0,5) || d.date.slice(8,10)"></td>
-                    <td style="padding:5px 4px;text-align:center" x-text="d.imsak"></td>
-                    <td style="padding:5px 4px;text-align:center" x-text="d.subuh"></td>
-                    <td style="padding:5px 4px;text-align:center" x-text="d.dzuhur"></td>
-                    <td style="padding:5px 4px;text-align:center" x-text="d.ashar"></td>
-                    <td style="padding:5px 4px;text-align:center;color:var(--primary);font-weight:500" x-text="d.maghrib"></td>
-                    <td style="padding:5px 4px;text-align:center" x-text="d.isya"></td>
+                <template x-for="(week, wi) in sholatWeeks" :key="wi">
+                  <tr>
+                    <template x-for="(d, di) in week" :key="di">
+                      <td :class="{ 'today': d?.isToday, 'active': d?.isToday }">
+                        <template x-if="d">
+                          <div>
+                            <div class="day-num" x-text="d.day"></div>
+                            <div class="day-prayer" x-show="d.maghrib" x-text="d.maghrib"></div>
+                          </div>
+                        </template>
+                      </td>
+                    </template>
                   </tr>
                 </template>
               </tbody>
             </table>
           </div>
-        </template>
+        </div>
       </div>
     </template>
 
+    <!-- ═══ QURAN ═══ -->
     <template x-if="activeTab === 'quran'">
-      <div>
-        <div class="flex items-center justify-between mb-4">
-          <h2 class="text-xl font-semibold">Al-Qur'an</h2>
-          <input class="search-input" style="max-width:180px;padding:8px 12px;font-size:0.75rem" placeholder="Cari surah..." x-model="quranSearch" @input="filterSurah()" />
-        </div>
-        <template x-if="quranLoading"><div class="loading-spinner"><div class="spinner"></div></div></template>
-        <template x-if="!quranLoading && quranError">
-          <div class="error-msg">Gagal memuat daftar surah</div>
-        </template>
-        <template x-if="!quranLoading && !quranSurah">
+      <div class="space-y-4">
+        <div class="card">
           <div class="flex items-center justify-between mb-3">
-            <button class="back-btn" @click="quranSurah=null;quranAyat=[]" x-show="quranAyat.length > 0">← Kembali</button>
-          </div>
-        </template>
-        <template x-if="activeSurah">
-          <div>
-            <button class="back-btn" @click="activeSurah=null;quranAyat=[]">← Kembali ke daftar</button>
-            <div class="card mb-4">
-              <div class="text-center mb-3">
-                <div class="text-2xl font-arabic mb-2" x-html="activeSurah.nama"></div>
-                <div class="text-lg font-semibold" x-text="activeSurah.nama_latin"></div>
-                <div class="text-sm opacity-60" x-text="activeSurah.arti + ' — ' + activeSurah.jumlah_ayat + ' ayat, ' + activeSurah.tempat_turun"></div>
-              </div>
-              <template x-for="(ayat, i) in quranAyat" :key="ayat.nomor">
-                <div class="ayat-card">
-                  <div class="ayat-num" x-text="ayat.nomor"></div>
-                  <div class="ayat-arab" x-html="ayat.ar"></div>
-                  <div class="ayat-terj" x-text="ayat.idn"></div>
-                </div>
-              </template>
+            <div>
+              <div class="text-sm font-semibold">Al-Qur'an</div>
+              <div class="text-xs opacity-60">Baca, pelajari, dan renungkan</div>
             </div>
+            <i data-lucide="book-open" style="width:20px;height:20px;color:var(--primary)"></i>
+          </div>
+          <input class="search-input" type="search" placeholder="Cari surah..." x-model="quranSearch" @input.debounce="filterSurah()" />
+        </div>
+
+        <template x-if="activeSurah">
+          <div class="space-y-3">
+            <div class="card" style="text-align:center;padding:24px">
+              <div class="text-3xl font-arabic mb-2" x-text="activeSurah.nama"></div>
+              <div class="text-lg font-semibold" x-text="activeSurah.nama_latin"></div>
+              <div class="text-xs opacity-60 mt-1" x-text="activeSurah.arti + ' — ' + activeSurah.jumlah_ayat + ' ayat, ' + activeSurah.tempat_turun"></div>
+            </div>
+            <button class="btn-soft w-full" @click="activeSurah=null;quranAyat=[]">← Kembali ke daftar</button>
+            <template x-for="(ayat, i) in quranAyat" :key="ayat.nomor">
+              <div class="card" style="padding:20px">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="badge" x-text="ayat.nomor"></span>
+                  <span class="text-xs opacity-40" x-text="'QS ' + activeSurah.nomor + ':' + ayat.nomor"></span>
+                </div>
+                <div class="ayat-arab" x-html="ayat.ar"></div>
+                <div class="ayat-latin text-xs mt-1" x-text="ayat.tr"></div>
+                <div class="ayat-terj mt-2" x-text="ayat.idn"></div>
+              </div>
+            </template>
           </div>
         </template>
-        <template x-if="!quranLoading && !activeSurah && quranFiltered.length > 0">
-          <div class="card">
+
+        <template x-if="!activeSurah && quranFiltered.length > 0">
+          <div class="card" style="padding:0">
             <template x-for="s in quranFiltered" :key="s.nomor">
               <div class="surah-item" @click="openSurah(s)">
                 <div class="surah-num" x-text="s.nomor"></div>
                 <div style="flex:1">
                   <div class="surah-name" x-text="s.nama_latin"></div>
-                  <div class="surah-arti" x-text="s.arti"></div>
+                  <div class="text-xs opacity-60" x-text="s.arti"></div>
                 </div>
-                <div class="surah-meta" x-text="s.jumlah_ayat + ' ayat'"></div>
+                <div class="text-xs opacity-40" x-text="s.jumlah_ayat + ' ayat'"></div>
               </div>
             </template>
           </div>
         </template>
-        <template x-if="!quranLoading && !activeSurah && quranFiltered.length === 0 && !quranSurah">
-          <div class="error-msg">Pencarian tidak ditemukan</div>
+
+        <template x-if="!activeSurah && quranFiltered.length === 0 && !quranLoading">
+          <div class="card"><div class="text-center py-4 opacity-60">Surah tidak ditemukan</div></div>
         </template>
+        <template x-if="quranLoading"><div class="flex items-center justify-center py-4"><div class="spinner"></div></div></template>
       </div>
     </template>
 
+    <!-- ═══ HADITS ═══ -->
     <template x-if="activeTab === 'hadits'">
-      <div>
-        <div class="flex items-center justify-between mb-4">
-          <h2 class="text-xl font-semibold">Hadits</h2>
-          <input class="search-input" style="max-width:180px;padding:8px 12px;font-size:0.75rem" placeholder="Cari..." x-model="haditsSearch" @input="filterHadits()" />
-        </div>
-        <template x-if="!haditsLoading && activeBook">
-          <div>
-            <button class="back-btn" @click="activeBook=null;haditsItems=[]">← Kembali</button>
-            <div class="card mt-3">
-              <h3 class="text-base font-semibold mb-2" x-text="activeBook.perawi_nama"></h3>
-              <template x-for="h in filteredHadits" :key="h.id">
-                <div class="hadits-card">
-                  <div class="hadits-arab" x-text="h.teks_arab"></div>
-                  <div class="hadits-terj" x-text="h.terjemahan_id"></div>
-                  <div class="hadits-meta"><span x-text="'No. ' + h.nomor"></span><span x-text="h.derajat"></span></div>
-                </div>
-              </template>
+      <div class="space-y-4">
+        <div class="card">
+          <div class="flex items-center justify-between mb-3">
+            <div>
+              <div class="text-sm font-semibold">Hadits</div>
+              <div class="text-xs opacity-60">9 perawi utama</div>
             </div>
+            <i data-lucide="scroll-text" style="width:20px;height:20px;color:var(--primary)"></i>
+          </div>
+          <input class="search-input" type="search" placeholder="Cari hadits atau perawi..." x-model="haditsSearch" @input.debounce="filterHadits()" />
+        </div>
+
+        <template x-if="activeBook">
+          <div class="space-y-3">
+            <button class="btn-soft w-full" @click="activeBook=null;haditsItems=[];filteredHadits=[]">← Kembali ke daftar perawi</button>
+            <h3 class="text-base font-semibold px-1" x-text="activeBook.perawi_nama"></h3>
+            <template x-for="h in filteredHadits" :key="h.id">
+              <div class="card">
+                <div class="hadits-arab" x-text="h.teks_arab"></div>
+                <div class="hadits-terj mt-2" x-text="h.terjemahan_id"></div>
+                <div class="flex items-center gap-2 mt-3">
+                  <span class="badge" x-text="'No. ' + h.nomor"></span>
+                  <span class="badge" x-text="h.derajat"></span>
+                  <span class="text-xs opacity-40" x-text="h.perawi_nama"></span>
+                </div>
+              </div>
+            </template>
           </div>
         </template>
-        <template x-if="!haditsLoading && !activeBook">
-          <div class="card">
+
+        <template x-if="!activeBook && filteredBooks.length > 0">
+          <div class="card" style="padding:0">
             <template x-for="b in filteredBooks" :key="b.perawi_slug">
               <div class="hadits-book" @click="openBook(b)">
-                <div class="name" x-text="b.perawi_nama"></div>
-                <div class="count" x-text="b.total + ' hadits'"></div>
+                <div><div class="font-medium" x-text="b.perawi_nama"></div></div>
+                <div class="flex items-center gap-2">
+                  <span class="text-xs opacity-40" x-text="b.total + ' hadits'"></span>
+                  <i data-lucide="chevron-right" style="width:16px;height:16px;opacity:0.4"></i>
+                </div>
               </div>
             </template>
           </div>
         </template>
-        <template x-if="haditsLoading"><div class="loading-spinner"><div class="spinner"></div></div></template>
+        <template x-if="haditsLoading"><div class="flex items-center justify-center py-4"><div class="spinner"></div></div></template>
       </div>
     </template>
 
+    <!-- ═══ DZIKIR ═══ -->
     <template x-if="activeTab === 'dzikir'">
-      <div>
-        <h2 class="text-xl font-semibold mb-4">Dzikir & Doa</h2>
-        <div class="flex gap-1 mb-4" style="border-bottom:1px solid var(--border)">
-          <template x-for="(g, i) in dzikirGroups" :key="g.id">
-            <button class="tab-btn" :class="{ 'active': dzikirActive === i }" @click="dzikirActive = i; resetDzikirCounters(i)" x-text="g.title"></button>
-          </template>
+      <div class="space-y-4">
+        <div class="card">
+          <div class="flex items-center gap-3 mb-3">
+            <i data-lucide="heart" style="width:20px;height:20px;color:var(--primary)"></i>
+            <div>
+              <div class="text-sm font-semibold">Dzikir & Doa</div>
+              <div class="text-xs opacity-60" x-text="'Hari ke-' + todayDay + ' — ' + currentMonthDisplay"></div>
+            </div>
+          </div>
+          <div class="flex" style="border-bottom:1px solid var(--border)">
+            <template x-for="(g, i) in dzikirGroups" :key="g.id">
+              <button class="tab-btn" :class="{ 'active': dzikirActive === i }" @click="dzikirActive = i; resetDzikirCounters(i)" x-text="g.title"></button>
+            </template>
+          </div>
         </div>
+
         <template x-if="dzikirGroups[dzikirActive]">
           <div>
             <template x-for="(item, idx) in dzikirGroups[dzikirActive].items" :key="idx">
-              <div class="dzikir-card">
+              <div class="card dzikir-card">
                 <div class="dzikir-arab" x-text="item.arabic"></div>
-                <div class="dzikir-terj"><em x-text="item.latin"></em> — <span x-text="item.translation"></span></div>
-                <div class="dzikir-counter">
-                  <button class="counter-btn" @click="decrementDzikir(idx)" :disabled="dzikirCounters[idx] <= 0">−</button>
-                  <span class="counter-num" x-text="dzikirCounters[idx]"></span>
-                  <span class="counter-target">/ <span x-text="item.count"></span></span>
-                  <button class="counter-btn" @click="incrementDzikir(idx)" :disabled="dzikirCounters[idx] >= item.count">+</button>
+                <div class="text-xs opacity-60 italic mb-2" x-text="item.latin"></div>
+                <div class="text-sm mb-3" x-text="item.translation"></div>
+                <div class="flex items-center justify-center gap-4">
+                  <button class="counter-btn" style="width:40px;height:40px" @click="decrementDzikir(idx)" :disabled="dzikirCounters[idx] <= 0">
+                    <i data-lucide="minus" style="width:18px;height:18px"></i></button>
+                  <div style="text-align:center;min-width:60px">
+                    <div class="text-xl font-bold" style="font-family:monospace" x-text="dzikirCounters[idx]"></div>
+                    <div class="text-xs opacity-40">/ <span x-text="item.count"></span></div>
+                  </div>
+                  <button class="counter-btn" style="width:40px;height:40px" @click="incrementDzikir(idx)" :disabled="dzikirCounters[idx] >= item.count">
+                    <i data-lucide="plus" style="width:18px;height:18px"></i></button>
                 </div>
                 <template x-if="item.reference">
-                  <div class="dzikir-ref" x-text="item.reference"></div>
+                  <div class="text-xs mt-2" style="color:var(--accent);text-align:center" x-text="item.reference"></div>
                 </template>
               </div>
             </template>
@@ -242,50 +238,75 @@
       </div>
     </template>
 
+    <!-- ═══ SETTINGS ═══ -->
     <template x-if="activeTab === 'settings'">
-      <div>
-        <h2 class="text-xl font-semibold mb-4">Pengaturan</h2>
-        <div class="card space-y-4">
+      <div class="space-y-4">
+        <div class="card">
+          <div class="flex items-center gap-3 mb-3">
+            <i data-lucide="settings" style="width:20px;height:20px;color:var(--primary)"></i>
+            <div>
+              <div class="text-sm font-semibold">Pengaturan</div>
+              <div class="text-xs opacity-60">Sesuaikan tampilan sesuai preferensi</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
           <div class="flex items-center justify-between">
-            <div><div class="text-sm font-medium">Mode Gelap</div><div class="text-xs opacity-60">Tampilan gelap untuk kenyamanan mata</div></div>
-            <button @click="darkMode = !darkMode" style="width:44px;height:24px;border-radius:12px;border:none;cursor:pointer;position:relative;transition:background 0.2s" :style="darkMode ? 'background:var(--primary)' : 'background:var(--border)'">
-              <span style="width:18px;height:18px;border-radius:50%;background:white;position:absolute;top:3px;transition:left 0.2s" :style="darkMode ? 'left:22px' : 'left:3px'"></span>
+            <div>
+              <div class="font-medium">Mode Gelap</div>
+              <div class="text-xs opacity-60">Tampilan gelap untuk kenyamanan</div>
+            </div>
+            <button @click="darkMode = !darkMode"
+              style="width:48px;height:26px;border-radius:13px;border:none;cursor:pointer;position:relative;transition:background 0.25s"
+              :style="darkMode ? 'background:var(--primary)' : 'background:var(--border)'">
+              <span style="width:20px;height:20px;border-radius:50%;background:white;position:absolute;top:3px;transition:left 0.25s;box-shadow:0 1px 3px rgba(0,0,0,0.2)"
+                :style="darkMode ? 'left:25px' : 'left:3px'"></span>
             </button>
           </div>
-          <div class="border-t" style="padding-top:16px">
-            <div class="text-sm font-medium mb-2">Ukuran Teks</div>
-            <div class="flex gap-2">
-              <button class="font-size-btn" :class="{ 'active': fontSize === 'small' }" @click="fontSize='small'" style="flex:1;padding:8px;border-radius:8px;border:1px solid var(--border);cursor:pointer;font-size:0.7rem">Kecil</button>
-              <button class="font-size-btn" :class="{ 'active': fontSize === 'medium' }" @click="fontSize='medium'" style="flex:1;padding:8px;border-radius:8px;border:1px solid var(--border);cursor:pointer;font-size:0.85rem">Sedang</button>
-              <button class="font-size-btn" :class="{ 'active': fontSize === 'large' }" @click="fontSize='large'" style="flex:1;padding:8px;border-radius:8px;border:1px solid var(--border);cursor:pointer;font-size:1rem">Besar</button>
-            </div>
+        </div>
+
+        <div class="card">
+          <div class="font-medium mb-3">Ukuran Teks</div>
+          <div class="flex gap-2">
+            <button class="font-size-btn" style="flex:1;text-align:center" :class="{ 'active': fontSize === 'small' }" @click="fontSize='small'">Kecil</button>
+            <button class="font-size-btn" style="flex:1;text-align:center" :class="{ 'active': fontSize === 'medium' }" @click="fontSize='medium'">Sedang</button>
+            <button class="font-size-btn" style="flex:1;text-align:center" :class="{ 'active': fontSize === 'large' }" @click="fontSize='large'">Besar</button>
           </div>
-          <div class="border-t" style="padding-top:16px">
-            <div class="text-sm font-medium mb-2">Tema</div>
-            <div class="flex gap-2">
-              <button class="theme-btn" :class="{ 'active': theme === 'default' }" @click="theme='default'" style="flex:1;padding:8px;border-radius:8px;border:1px solid var(--border);cursor:pointer;font-size:0.8rem">Default</button>
-              <button class="theme-btn" :class="{ 'active': theme === 'warp' }" @click="theme='warp'" style="flex:1;padding:8px;border-radius:8px;border:1px solid var(--border);cursor:pointer;font-size:0.8rem">Warp</button>
-            </div>
+        </div>
+
+        <div class="card">
+          <div class="font-medium mb-3">Tema</div>
+          <div class="flex gap-2">
+            <button class="theme-btn" style="flex:1;text-align:center" :class="{ 'active': theme === 'default' }" @click="theme='default'">Default</button>
+            <button class="theme-btn" style="flex:1;text-align:center" :class="{ 'active': theme === 'warp' }" @click="theme='warp'">Warp</button>
           </div>
-          <div class="border-t" style="padding-top:16px">
-            <div class="text-xs opacity-60 text-center">Hakhagi v0.2.0 — Static</div>
-          </div>
+        </div>
+
+        <div class="card" style="text-align:center">
+          <div class="text-xs opacity-40">Hakhagi v0.2.0 · Terbangun di atas Al-Qur'an & As-Sunnah</div>
+          <div class="text-xs opacity-40 mt-1">Memurnikan Aqidah · Menebarkan Sunnah</div>
         </div>
       </div>
     </template>
   </main>
 
   <nav>
-    <button @click="activeTab='sholat'" :class="activeTab==='sholat' ? 'active' : ''"><i data-lucide="clock"></i><span>Sholat</span></button>
-    <button @click="activeTab='quran'" :class="activeTab==='quran' ? 'active' : ''"><i data-lucide="book-open"></i><span>Qur'an</span></button>
-    <button @click="activeTab='hadits'" :class="activeTab==='hadits' ? 'active' : ''"><i data-lucide="scroll-text"></i><span>Hadits</span></button>
-    <button @click="activeTab='dzikir'" :class="activeTab==='dzikir' ? 'active' : ''"><i data-lucide="heart"></i><span>Dzikir</span></button>
-    <button @click="activeTab='settings'" :class="activeTab==='settings' ? 'active' : ''"><i data-lucide="settings"></i><span>Atur</span></button>
+    <button @click="activeTab='sholat'" :class="activeTab==='sholat' ? 'active' : ''">
+      <i data-lucide="clock"></i><span>Sholat</span></button>
+    <button @click="activeTab='quran'" :class="activeTab==='quran' ? 'active' : ''">
+      <i data-lucide="book-open"></i><span>Qur'an</span></button>
+    <button @click="activeTab='hadits'" :class="activeTab==='hadits' ? 'active' : ''">
+      <i data-lucide="scroll-text"></i><span>Hadits</span></button>
+    <button @click="activeTab='dzikir'" :class="activeTab==='dzikir' ? 'active' : ''">
+      <i data-lucide="heart"></i><span>Dzikir</span></button>
+    <button @click="activeTab='settings'" :class="activeTab==='settings' ? 'active' : ''">
+      <i data-lucide="settings"></i><span>Atur</span></button>
   </nav>
 
   <script>
     document.addEventListener('alpine:init', () => {
-      if (window.lucide) lucide.createIcons()
+      setTimeout(() => { if (window.lucide) lucide.createIcons() }, 100)
     })
 
     function hakhagiApp() {
@@ -297,43 +318,47 @@
         theme: localStorage.getItem('hakhagi-theme') || 'default',
 
         // Sholat
-        sholatLoading: true,
-        sholatError: null,
-        sholatToday: null,
-        sholatMonth: [],
+        sholatLoading: true, sholatToday: null, sholatMonth: [],
+        sholatTimes: [
+          { key: 'subuh', label: 'Subuh' }, { key: 'dzuhur', label: 'Dzuhur' },
+          { key: 'ashar', label: 'Ashar' }, { key: 'maghrib', label: 'Maghrib' },
+          { key: 'isya', label: 'Isya' }, { key: 'terbit', label: 'Terbit' },
+          { key: 'dhuha', label: 'Dhuha' }, { key: 'imsak', label: 'Imsak' }
+        ],
+        nextPrayerIdx: -1, nextRemaining: '',
+        sholatWeeks: [],
 
         // Quran
-        quranLoading: true,
-        quranError: null,
-        quranSurah: null,
-        quranFiltered: [],
-        quranSearch: '',
-        activeSurah: null,
-        quranAyat: [],
-        quranAyatLoading: false,
+        quranLoading: true, quranSurah: null, quranFiltered: [],
+        quranSearch: '', activeSurah: null, quranAyat: [],
 
         // Hadits
-        haditsLoading: true,
-        haditsBooks: [],
-        filteredBooks: [],
-        haditsSearch: '',
-        activeBook: null,
-        haditsItems: [],
+        haditsLoading: true, haditsBooks: [], filteredBooks: [],
+        haditsSearch: '', activeBook: null, haditsItems: [], filteredHadits: [],
 
         // Dzikir
-        dzikirActive: 0,
-        dzikirGroups: [],
-        dzikirCounters: [],
+        dzikirActive: 0, dzikirGroups: [], dzikirCounters: [],
+
+        // Date helpers
+        todayDate: '', todayDay: 0, currentMonth: '', currentMonthDisplay: '',
 
         init() {
-          this.$watch('darkMode', val => { localStorage.setItem('hakhagi-dark', val); if (window.lucide) setTimeout(() => lucide.createIcons(), 50) })
-          this.$watch('fontSize', val => localStorage.setItem('hakhagi-font', val))
-          this.$watch('theme', val => { localStorage.setItem('hakhagi-theme', val); if (window.lucide) setTimeout(() => lucide.createIcons(), 50) })
-          this.$watch('activeTab', val => {
-            localStorage.setItem('hakhagi-tab', val)
-            this.loadTab(val)
-            if (window.lucide) setTimeout(() => lucide.createIcons(), 100)
+          this.$watch('darkMode', v => localStorage.setItem('hakhagi-dark', v))
+          this.$watch('fontSize', v => localStorage.setItem('hakhagi-font', v))
+          this.$watch('theme', v => localStorage.setItem('hakhagi-theme', v))
+          this.$watch('activeTab', v => {
+            localStorage.setItem('hakhagi-tab', v)
+            this.loadTab(v)
           })
+
+          const now = new Date()
+          const days = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu']
+          const months = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember']
+          this.todayDate = days[now.getDay()] + ', ' + now.getDate() + ' ' + months[now.getMonth()] + ' ' + now.getFullYear()
+          this.todayDay = now.getDate()
+          this.currentMonth = months[now.getMonth()] + ' ' + now.getFullYear()
+          this.currentMonthDisplay = months[now.getMonth()] + ' ' + now.getFullYear()
+
           this.loadTab(this.activeTab)
           this.loadDzikir()
           this.loadHadits()
@@ -349,50 +374,91 @@
 
         // ─── SHOLAT ───
         async loadSholat() {
-          this.sholatLoading = true; this.sholatError = null
+          this.sholatLoading = true
           try {
             const now = new Date()
             const y = now.getFullYear(), m = String(now.getMonth() + 1).padStart(2, '0')
             const res = await fetch(`https://api.myquran.com/v2/sholat/jadwal/1434/${y}/${m}`)
             const d = await res.json()
-            if (!d.status) throw new Error('API error')
+            if (!d.status) throw new Error()
             this.sholatMonth = d.data.jadwal
             const today = `${y}-${m}-${String(now.getDate()).padStart(2, '0')}`
-            this.sholatToday = this.sholatMonth.find(x => x.date === today) || this.sholatMonth[now.getDate() - 1] || this.sholatMonth[0]
-          } catch (e) {
-            this.sholatError = e.message
+            this.sholatToday = this.sholatMonth.find(x => x.date === today) || this.sholatMonth[0]
+
+            this.buildWeeks()
+            this.calcNextPrayer()
+            this.startPrayerCountdown()
+          } catch (e) { this.sholatToday = null
           } finally { this.sholatLoading = false }
+        },
+
+        buildWeeks() {
+          const weeks = []; let week = []
+          const first = new Date(this.sholatMonth[0].date)
+          for (let i = 0; i < first.getDay(); i++) week.push(null)
+          this.sholatMonth.forEach(d => {
+            const day = parseInt(d.date.slice(8,10))
+            week.push({ day, maghrib: d.maghrib, isToday: d.date === this.sholatToday?.date })
+            if (week.length === 7) { weeks.push(week); week = [] }
+          })
+          if (week.length) weeks.push(week)
+          this.sholatWeeks = weeks
+        },
+
+        calcNextPrayer() {
+          const now = new Date()
+          const hm = now.getHours() * 60 + now.getMinutes()
+          const order = ['subuh','dzuhur','ashar','maghrib','isya']
+          const times = order.map(k => {
+            if (!this.sholatToday || !this.sholatToday[k]) return null
+            const [h, m] = this.sholatToday[k].split(':').map(Number)
+            return h * 60 + m
+          })
+          let next = -1, minDiff = Infinity
+          times.forEach((t, i) => {
+            if (t !== null && t > hm && (t - hm) < minDiff) { minDiff = t - hm; next = i }
+          })
+          this.nextPrayerIdx = next !== -1 ? order.indexOf(order[next]) : 4
+          this.nextRemaining = next !== -1 ? this.formatDuration(minDiff) : ''
+        },
+
+        formatDuration(mins) {
+          if (!mins || mins <= 0) return ''
+          const h = Math.floor(mins / 60), m = mins % 60
+          return `${h}j ${m}m lagi`
+        },
+
+        startPrayerCountdown() {
+          setInterval(() => this.calcNextPrayer(), 60000)
         },
 
         // ─── QURAN ───
         async loadQuranList() {
-          this.quranLoading = true; this.quranError = null
+          this.quranLoading = true
           try {
             const res = await fetch('https://equran.id/api/surat')
             this.quranSurah = await res.json()
             this.quranFiltered = [...this.quranSurah]
-          } catch (e) {
-            this.quranError = e.message
+          } catch (e) { this.quranSurah = []
           } finally { this.quranLoading = false }
         },
 
         filterSurah() {
           const q = this.quranSearch.toLowerCase()
           if (!this.quranSurah) return
-          this.quranFiltered = q ? this.quranSurah.filter(s =>
-            s.nama_latin.toLowerCase().includes(q) || s.arti.toLowerCase().includes(q) || s.nomor.toString().includes(q)
-          ) : [...this.quranSurah]
+          this.quranFiltered = q
+            ? this.quranSurah.filter(s => s.nama_latin.toLowerCase().includes(q) || s.arti.toLowerCase().includes(q))
+            : [...this.quranSurah]
         },
 
         async openSurah(surah) {
-          this.activeSurah = surah; this.quranAyat = []; this.quranAyatLoading = true
+          this.activeSurah = surah; this.quranAyat = []
           try {
             const res = await fetch(`https://equran.id/api/surat/${surah.nomor}`)
             const d = await res.json()
             this.quranAyat = d.ayat || []
-          } catch (e) {
-            this.quranAyat = []
-          } finally { this.quranAyatLoading = false }
+          } catch (e) { this.quranAyat = [] }
+          setTimeout(() => { if (window.lucide) lucide.createIcons() }, 200)
         },
 
         // ─── HADITS ───
@@ -402,18 +468,16 @@
             const res = await fetch('/data/hadits_books.json')
             this.haditsBooks = await res.json()
             this.filteredBooks = [...this.haditsBooks]
-          } catch (e) {
-            this.haditsBooks = []; this.filteredBooks = []
+          } catch (e) { this.haditsBooks = []; this.filteredBooks = []
           } finally { this.haditsLoading = false }
         },
 
         filterHadits() {
           const q = this.haditsSearch.toLowerCase()
           if (this.activeBook) {
-            if (!q) { this.filteredHadits = [...this.haditsItems]; return }
-            this.filteredHadits = this.haditsItems.filter(h =>
-              h.teks_arab.includes(q) || h.terjemahan_id.toLowerCase().includes(q) || h.nomor.toString().includes(q)
-            )
+            this.filteredHadits = q ? this.haditsItems.filter(h =>
+              h.teks_arab.includes(q) || h.terjemahan_id.toLowerCase().includes(q)
+            ) : [...this.haditsItems]
           } else {
             this.filteredBooks = q ? this.haditsBooks.filter(b =>
               b.perawi_nama.toLowerCase().includes(q)
@@ -421,18 +485,15 @@
           }
         },
 
-        filteredHadits: [],
-
         async openBook(book) {
-          this.activeBook = book; this.haditsItems = []; this.filteredHadits = []
-          this.haditsLoading = true
+          this.activeBook = book; this.haditsItems = []; this.filteredHadits = []; this.haditsLoading = true
           try {
             const res = await fetch(`/data/hadits_${book.perawi_slug}.json`)
             this.haditsItems = await res.json()
             this.filteredHadits = [...this.haditsItems]
-          } catch (e) {
-            this.haditsItems = []; this.filteredHadits = []
-          } finally { this.haditsLoading = false }
+          } catch (e) { this.haditsItems = []; this.filteredHadits = []
+          } finally { this.haditsLoading = false
+            setTimeout(() => { if (window.lucide) lucide.createIcons() }, 200) }
         },
 
         // ─── DZIKIR ───
@@ -441,21 +502,19 @@
             const res = await fetch('/data/dzikir.json')
             this.dzikirGroups = await res.json()
             this.resetDzikirCounters(0)
-          } catch (e) {
-            this.dzikirGroups = []
-          }
+          } catch (e) { this.dzikirGroups = [] }
         },
 
         resetDzikirCounters(idx) {
           if (!this.dzikirGroups[idx]) return
           this.dzikirCounters = this.dzikirGroups[idx].items.map(() => 0)
+          setTimeout(() => { if (window.lucide) lucide.createIcons() }, 100)
         },
 
         incrementDzikir(idx) {
           const max = this.dzikirGroups[this.dzikirActive]?.items[idx]?.count || 0
           if (this.dzikirCounters[idx] < max) this.dzikirCounters[idx]++
         },
-
         decrementDzikir(idx) {
           if (this.dzikirCounters[idx] > 0) this.dzikirCounters[idx]--
         }
