@@ -25,64 +25,89 @@
     <!-- ═══ SHOLAT ═══ -->
     <template x-if="activeTab === 'sholat'">
       <div class="space-y-4">
-        <div class="card">
-          <div class="flex items-center justify-between mb-3">
-            <div>
-              <div class="text-sm font-semibold text-muted">☾ Jadwal Sholat</div>
-              <div class="text-xs opacity-60" x-text="todayDate"></div>
+        <template x-if="sholatLoading"><div class="card"><div class="flex items-center justify-center py-4"><div class="spinner"></div></div></div></template>
+
+        <template x-if="!sholatLoading && sholatToday">
+          <div>
+            <!-- Header -->
+            <div class="card" style="padding:14px 16px">
+              <div class="flex items-center justify-between">
+                <div>
+                  <div class="text-xs opacity-60" x-text="todayDate"></div>
+                  <div class="text-sm font-semibold">Jadwal Sholat</div>
+                </div>
+                <span class="badge">📍 Solo</span>
+              </div>
             </div>
-            <span class="badge">Solo</span>
-          </div>
-          <template x-if="sholatLoading"><div class="flex items-center justify-center py-4"><div class="spinner"></div></div></template>
-          <template x-if="!sholatLoading && sholatToday">
-            <div>
-              <div class="grid grid-cols-2 gap-2">
-                <template x-for="(w, i) in sholatTimes" :key="w.key">
-                  <div class="sholat-time-box" :class="{ 'active': i === 6 }" :style="i === 6 ? 'border-color:var(--primary);background:var(--primary-soft)' : ''">
-                    <div class="label" x-text="w.label"></div>
-                    <div class="time" :class="{ 'highlight': i === 6 }" x-text="sholatToday[w.key] || '--:--'"></div>
-                    <div class="remaining" x-show="i === nextPrayerIdx && nextRemaining" x-text="nextRemaining"></div>
+
+            <!-- Next Prayer — Hero -->
+            <div class="next-prayer-card">
+              <div class="text-xs opacity-60 uppercase tracking-wider mb-1">Sholat Berikutnya</div>
+              <div class="flex items-end justify-center gap-3">
+                <div class="next-name" x-text="nextPrayerName"></div>
+                <div class="next-time" x-text="nextPrayerTime"></div>
+              </div>
+              <div class="next-countdown" x-text="nextRemaining || 'Sekarang waktunya!'"></div>
+              <div class="current-time-display" x-text="currentTime"></div>
+            </div>
+
+            <!-- 5 Waktu Sholat -->
+            <div class="card" style="padding:16px">
+              <div class="text-xs font-semibold opacity-60 mb-3 uppercase tracking-wider" style="font-size:0.65rem">5 Waktu Sholat</div>
+              <div class="prayer-grid-5">
+                <template x-for="(w, i) in mainPrayers" :key="w.key">
+                  <div class="prayer-item" :class="{ 'next': w.key === nextPrayerKey, 'past': w.past }">
+                    <div class="prayer-label" x-text="w.label"></div>
+                    <div class="prayer-time" x-text="sholatToday[w.key] || '--:--'"></div>
+                    <template x-if="w.key === nextPrayerKey && nextRemaining">
+                      <div class="prayer-remaining" x-text="nextRemaining"></div>
+                    </template>
                   </div>
                 </template>
               </div>
-              <div class="flex justify-between mt-3 text-xs opacity-60">
-                <span>Imsak: <strong x-text="sholatToday.imsak"></strong></span>
-                <span>Terbit: <strong x-text="sholatToday.terbit"></strong></span>
-                <span>Dhuha: <strong x-text="sholatToday.dhuha"></strong></span>
+            </div>
+
+            <!-- Info Tambahan: Imsak, Terbit, Dhuha -->
+            <div class="card" style="padding:12px 16px">
+              <div class="flex justify-center gap-6 text-xs">
+                <span class="opacity-60">Imsak <strong x-text="sholatToday.imsak"></strong></span>
+                <span class="opacity-60">Terbit <strong x-text="sholatToday.terbit"></strong></span>
+                <span class="opacity-60">Dhuha <strong x-text="sholatToday.dhuha"></strong></span>
               </div>
             </div>
-          </template>
-        </div>
 
-        <div class="card">
-          <div class="flex items-center justify-between mb-3">
-            <div class="text-sm font-semibold">Kalender Bulanan</div>
-            <span class="text-xs opacity-60" x-text="currentMonth"></span>
-          </div>
-          <div style="overflow-x:auto">
-            <table class="month-table">
-              <thead><tr>
-                <th>Mg</th><th>Sn</th><th>Sl</th><th>Rb</th><th>Km</th><th>Jm</th><th>Sb</th>
-              </tr></thead>
-              <tbody>
-                <template x-for="(week, wi) in sholatWeeks" :key="wi">
-                  <tr>
-                    <template x-for="(d, di) in week" :key="di">
-                      <td :class="{ 'today': d?.isToday, 'active': d?.isToday }">
-                        <template x-if="d">
-                          <div>
-                            <div class="day-num" x-text="d.day"></div>
-                            <div class="day-prayer" x-show="d.maghrib" x-text="d.maghrib"></div>
-                          </div>
-                        </template>
-                      </td>
+            <!-- Kalender Bulanan -->
+            <div class="card">
+              <div class="flex items-center justify-between mb-3">
+                <div class="text-sm font-semibold">Kalender</div>
+                <span class="text-xs opacity-60" x-text="currentMonth"></span>
+              </div>
+              <div class="cal-grid">
+                <div class="cal-header">Min</div>
+                <div class="cal-header">Sen</div>
+                <div class="cal-header">Sel</div>
+                <div class="cal-header">Rab</div>
+                <div class="cal-header">Kam</div>
+                <div class="cal-header">Jum</div>
+                <div class="cal-header">Sab</div>
+                <template x-for="(d, i) in calDays" :key="i">
+                  <div class="cal-cell" :class="{ 'cal-today': d?.isToday, 'cal-empty': !d }">
+                    <template x-if="d">
+                      <div>
+                        <div class="cal-date" :class="{ 'cal-date-today': d.isToday }" x-text="d.day"></div>
+                        <div class="cal-maghrib" x-text="d.maghrib"></div>
+                      </div>
                     </template>
-                  </tr>
+                  </div>
                 </template>
-              </tbody>
-            </table>
+              </div>
+            </div>
           </div>
-        </div>
+        </template>
+
+        <template x-if="!sholatLoading && !sholatToday">
+          <div class="card"><div class="text-center py-4 opacity-60">Gagal memuat jadwal sholat</div></div>
+        </template>
       </div>
     </template>
 
@@ -319,14 +344,15 @@
 
         // Sholat
         sholatLoading: true, sholatToday: null, sholatMonth: [],
-        sholatTimes: [
-          { key: 'subuh', label: 'Subuh' }, { key: 'dzuhur', label: 'Dzuhur' },
-          { key: 'ashar', label: 'Ashar' }, { key: 'maghrib', label: 'Maghrib' },
-          { key: 'isya', label: 'Isya' }, { key: 'terbit', label: 'Terbit' },
-          { key: 'dhuha', label: 'Dhuha' }, { key: 'imsak', label: 'Imsak' }
+        mainPrayers: [
+          { key: 'subuh', label: 'Subuh', past: false },
+          { key: 'dzuhur', label: 'Dzuhur', past: false },
+          { key: 'ashar', label: 'Ashar', past: false },
+          { key: 'maghrib', label: 'Maghrib', past: false },
+          { key: 'isya', label: 'Isya', past: false }
         ],
-        nextPrayerIdx: -1, nextRemaining: '',
-        sholatWeeks: [],
+        nextPrayerKey: '', nextPrayerName: '', nextPrayerTime: '', nextRemaining: '',
+        calDays: [], currentTime: '',
 
         // Quran
         quranLoading: true, quranSurah: null, quranFiltered: [],
@@ -385,30 +411,30 @@
             const today = `${y}-${m}-${String(now.getDate()).padStart(2, '0')}`
             this.sholatToday = this.sholatMonth.find(x => x.date === today) || this.sholatMonth[0]
 
-            this.buildWeeks()
+            this.buildCalendar()
             this.calcNextPrayer()
+            this.updateClock()
             this.startPrayerCountdown()
           } catch (e) { this.sholatToday = null
           } finally { this.sholatLoading = false }
         },
 
-        buildWeeks() {
-          const weeks = []; let week = []
+        buildCalendar() {
+          const days = []
           const first = new Date(this.sholatMonth[0].date)
-          for (let i = 0; i < first.getDay(); i++) week.push(null)
+          for (let i = 0; i < first.getDay(); i++) days.push(null)
           this.sholatMonth.forEach(d => {
-            const day = parseInt(d.date.slice(8,10))
-            week.push({ day, maghrib: d.maghrib, isToday: d.date === this.sholatToday?.date })
-            if (week.length === 7) { weeks.push(week); week = [] }
+            days.push({ day: parseInt(d.date.slice(8,10)), maghrib: d.maghrib, isToday: d.date === this.sholatToday?.date })
           })
-          if (week.length) weeks.push(week)
-          this.sholatWeeks = weeks
+          while (days.length % 7 !== 0) days.push(null)
+          this.calDays = days
         },
 
         calcNextPrayer() {
           const now = new Date()
           const hm = now.getHours() * 60 + now.getMinutes()
           const order = ['subuh','dzuhur','ashar','maghrib','isya']
+          const labelMap = { subuh:'Subuh', dzuhur:'Dzuhur', ashar:'Ashar', maghrib:'Maghrib', isya:'Isya' }
           const times = order.map(k => {
             if (!this.sholatToday || !this.sholatToday[k]) return null
             const [h, m] = this.sholatToday[k].split(':').map(Number)
@@ -418,18 +444,36 @@
           times.forEach((t, i) => {
             if (t !== null && t > hm && (t - hm) < minDiff) { minDiff = t - hm; next = i }
           })
-          this.nextPrayerIdx = next !== -1 ? order.indexOf(order[next]) : 4
-          this.nextRemaining = next !== -1 ? this.formatDuration(minDiff) : ''
+          // Mark past prayers
+          this.mainPrayers.forEach((p, i) => { p.past = times[i] !== null ? times[i] <= hm : false })
+          // If all prayers passed, next is subuh tomorrow
+          if (next === -1) {
+            next = 0
+            minDiff = (24*60 - hm) + (times[0] || 0)
+          }
+          this.nextPrayerKey = order[next]
+          this.nextPrayerName = labelMap[order[next]]
+          this.nextPrayerTime = this.sholatToday?.[order[next]] || '--:--'
+          this.nextRemaining = this.formatDuration(minDiff)
+        },
+
+        updateClock() {
+          const now = new Date()
+          this.currentTime = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })
         },
 
         formatDuration(mins) {
           if (!mins || mins <= 0) return ''
           const h = Math.floor(mins / 60), m = mins % 60
-          return `${h}j ${m}m lagi`
+          if (h > 0) return `${h} jam ${m} menit`
+          return `${m} menit`
         },
 
         startPrayerCountdown() {
-          setInterval(() => this.calcNextPrayer(), 60000)
+          setInterval(() => {
+            this.calcNextPrayer()
+            this.updateClock()
+          }, 30000)
         },
 
         // ─── QURAN ───

@@ -464,3 +464,55 @@ body[data-font-size="large"] { --fs: 1.125; }
 .font-size-btn { padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border); cursor: pointer; font-size: 0.8rem; color: var(--text-muted); background: var(--surface-hover); transition: all 0.15s; }
 .font-size-btn.active { color: white; background: var(--primary); border-color: var(--primary); }
 .dark .font-size-btn.active { color: #0B1120; }
+
+/* ═══════════════════════════════════════
+   Sholat — Redesigned UI
+   ═══════════════════════════════════════ */
+
+.next-prayer-card {
+  background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+  color: white; border-radius: 14px; padding: 24px 20px;
+  text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+}
+.dark .next-prayer-card { box-shadow: 0 4px 20px rgba(0,0,0,0.4); }
+.next-prayer-card .next-name { font-size: 1.5rem; font-weight: 700; }
+.next-prayer-card .next-time { font-size: 2.2rem; font-weight: 700; line-height: 1; }
+.next-prayer-card .next-countdown { font-size: 0.85rem; opacity: 0.85; margin-top: 6px; }
+.next-prayer-card .current-time-display {
+  margin-top: 10px; font-size: 0.7rem; opacity: 0.5;
+  font-family: monospace; letter-spacing: 1px;
+}
+
+.prayer-grid-5 {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+}
+.prayer-item {
+  text-align: center; padding: 14px 6px; border-radius: 10px;
+  background: var(--surface-hover); border: 1px solid var(--border);
+  position: relative; transition: all 0.2s;
+}
+.prayer-item.next {
+  background: var(--primary-soft); border-color: var(--primary);
+  box-shadow: 0 0 0 2px var(--primary-soft);
+}
+.prayer-item.past { opacity: 0.5; }
+.prayer-item .prayer-label { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+.prayer-item .prayer-time { font-size: calc(1.2rem * var(--fs)); font-weight: 600; color: var(--text); }
+.prayer-item.next .prayer-time { color: var(--primary); }
+.prayer-item .prayer-remaining { font-size: 0.6rem; color: var(--primary); font-weight: 600; margin-top: 2px; }
+
+/* Calendar */
+.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
+.cal-header { text-align: center; font-size: 0.6rem; color: var(--text-subtle); font-weight: 500; padding: 4px 0; text-transform: uppercase; }
+.cal-cell { text-align: center; padding: 6px 2px; border-radius: 8px; min-height: 36px; }
+.cal-cell.cal-today { background: var(--primary-soft); }
+.cal-cell.cal-empty { visibility: hidden; }
+.cal-date { font-size: calc(0.8rem * var(--fs)); font-weight: 500; color: var(--text); line-height: 1.2; }
+.cal-date-today { color: var(--primary); font-weight: 700; }
+.cal-maghrib { font-size: 0.55rem; color: var(--text-subtle); margin-top: 1px; }
+
+@media (max-width: 380px) {
+  .prayer-grid-5 { grid-template-columns: repeat(2, 1fr); }
+  .next-prayer-card { padding: 18px 14px; }
+  .next-prayer-card .next-time { font-size: 1.8rem; }
+}
