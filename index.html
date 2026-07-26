@@ -42,13 +42,11 @@
 
             <!-- Next Prayer — Hero -->
             <div class="next-prayer-card">
-              <div class="text-xs opacity-60 uppercase tracking-wider mb-1">Sholat Berikutnya</div>
-              <div class="flex items-end justify-center gap-3">
-                <div class="next-name" x-text="nextPrayerName"></div>
-                <div class="next-time" x-text="nextPrayerTime"></div>
-              </div>
+              <div class="next-label">Sholat Berikutnya</div>
+              <div class="next-name" x-text="nextPrayerName"></div>
+              <div class="next-time" x-text="nextPrayerTime"></div>
               <div class="next-countdown" x-text="nextRemaining || 'Sekarang waktunya!'"></div>
-              <div class="current-time-display" x-text="currentTime"></div>
+              <div class="current-time-display" x-text="'⏱ ' + currentTime + ' WIB'"></div>
             </div>
 
             <!-- 5 Waktu Sholat -->
@@ -68,11 +66,11 @@
             </div>
 
             <!-- Info Tambahan: Imsak, Terbit, Dhuha -->
-            <div class="card" style="padding:12px 16px">
-              <div class="flex justify-center gap-6 text-xs">
-                <span class="opacity-60">Imsak <strong x-text="sholatToday.imsak"></strong></span>
-                <span class="opacity-60">Terbit <strong x-text="sholatToday.terbit"></strong></span>
-                <span class="opacity-60">Dhuha <strong x-text="sholatToday.dhuha"></strong></span>
+            <div class="card" style="padding:14px 16px">
+              <div class="info-row">
+                <span>Imsak <strong x-text="sholatToday.imsak"></strong></span>
+                <span>Terbit <strong x-text="sholatToday.terbit"></strong></span>
+                <span>Dhuha <strong x-text="sholatToday.dhuha"></strong></span>
               </div>
             </div>
 
