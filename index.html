@@ -278,7 +278,7 @@
           <div class="flex items-center justify-between">
             <div>
               <div class="font-medium">Mode Gelap</div>
-              <div class="text-xs opacity-60">Tampilan gelap untuk kenyamanan</div>
+              <div class="text-xs opacity-60" x-text="darkMode ? 'Saat ini: Gelap — Klik untuk terang' : 'Saat ini: Terang — Klik untuk gelap'"></div>
             </div>
             <button @click="darkMode = !darkMode"
               style="width:48px;height:26px;border-radius:13px;border:none;cursor:pointer;position:relative;transition:background 0.25s"
@@ -335,8 +335,7 @@
     function hakhagiApp() {
       return {
         activeTab: localStorage.getItem('hakhagi-tab') || 'sholat',
-        darkMode: localStorage.getItem('hakhagi-dark') === 'true' ||
-          (localStorage.getItem('hakhagi-dark') === null && window.matchMedia('(prefers-color-scheme: dark)').matches),
+        darkMode: localStorage.getItem('hakhagi-dark') === 'true' ? true : false,
         fontSize: localStorage.getItem('hakhagi-font') || 'medium',
         theme: localStorage.getItem('hakhagi-theme') || 'default',
 
