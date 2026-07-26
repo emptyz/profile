@@ -4,38 +4,38 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
-  --bg: #F1F5F9;
+  --bg: #FAFAF8;
   --surface: #FFFFFF;
-  --surface-hover: #F8FAFC;
-  --border: #E2E8F0;
-  --text: #0F172A;
-  --text-muted: #64748B;
-  --text-subtle: #94A3B8;
-  --primary: #1E3A5F;
-  --primary-hover: #2A4A6F;
-  --primary-soft: rgba(30, 58, 95, 0.08);
+  --surface-hover: #F5F4F0;
+  --border: #E8E4DE;
+  --text: #1A1A1A;
+  --text-muted: #6B6560;
+  --text-subtle: #9E9892;
+  --primary: #8B7355;
+  --primary-hover: #7A6548;
+  --primary-soft: rgba(139, 115, 85, 0.1);
   --accent: #C8A96E;
-  --accent-soft: rgba(200, 169, 110, 0.1);
+  --accent-soft: rgba(200, 169, 110, 0.12);
   --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
-  --shadow: 0 1px 3px 0 rgba(0,0,0,0.06);
-  --shadow-card: 0 1px 4px 0 rgba(0,0,0,0.08);
+  --shadow: 0 1px 3px 0 rgba(0,0,0,0.04);
+  --shadow-card: 0 1px 4px rgba(0,0,0,0.06);
   --radius: 12px;
   --radius-sm: 8px;
 }
 
 .dark {
-  --bg: #0B1120;
-  --surface: #131B2E;
-  --surface-hover: #1A2540;
-  --border: #1E293B;
-  --text: #E2E8F0;
-  --text-muted: #94A3B8;
-  --text-subtle: #64748B;
+  --bg: #141312;
+  --surface: #1C1B1A;
+  --surface-hover: #242322;
+  --border: #2E2C2A;
+  --text: #EDEBE8;
+  --text-muted: #9E9892;
+  --text-subtle: #6B6560;
   --primary: #C8A96E;
   --primary-hover: #D4B683;
-  --primary-soft: rgba(200, 169, 110, 0.1);
-  --accent: #1E3A5F;
-  --accent-soft: rgba(30, 58, 95, 0.15);
+  --primary-soft: rgba(200, 169, 110, 0.12);
+  --accent: #8B7355;
+  --accent-soft: rgba(139, 115, 85, 0.18);
   --shadow-sm: 0 1px 2px rgba(0,0,0,0.3);
   --shadow: 0 1px 3px rgba(0,0,0,0.3);
   --shadow-card: 0 1px 4px rgba(0,0,0,0.4);
@@ -470,13 +470,13 @@ body[data-font-size="large"] { --fs: 1.125; }
    ═══════════════════════════════════════ */
 
 .next-prayer-card {
-  background: linear-gradient(135deg, #1E3A5F, #2A4A6F);
+  background: linear-gradient(135deg, var(--primary), var(--primary-hover));
   color: white; border-radius: 16px; padding: 28px 20px 24px;
   text-align: center; position: relative; overflow: hidden;
 }
 .next-prayer-card::before {
   content: ''; position: absolute; inset: 0;
-  background: radial-gradient(ellipse at 30% 20%, rgba(200,169,110,0.15) 0%, transparent 60%);
+  background: radial-gradient(ellipse at 30% 20%, rgba(200,169,110,0.2) 0%, transparent 60%);
 }
 .next-prayer-card > * { position: relative; }
 .next-prayer-card .next-label { font-size: 0.65rem; font-weight: 500; opacity: 0.7; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 6px; }
