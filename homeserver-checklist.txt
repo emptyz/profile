@@ -1,0 +1,155 @@
+HOMESERVER / HOMELAB — Lengkap untuk Pemula
+═════════════════════════════════════════════
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+HARDWARE (yang kamu incar)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Lenovo M715q Ryzen 5 2400GE + 8GB
+SSD 256GB (OS + Docker)
+HDD 1TB (data penyimpanan)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+OS YANG DIGUNAKAN
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🏆 Debian 12 / Ubuntu Server 24.04 LTS
+   (ringan, stabil, komunitas besar, dokumentasi lengkap)
+
+Atau alternatif:
+• Proxmox VE — kalau mau virtualisasi (jalanin beberapa OS)
+• CasaOS — UI mirip NAS, ramah pemula
+• Ubuntu Desktop — kalau masih perlu tampilan desktop
+
+────────────────────────────
+TINGKAT 1 — WAJIB
+────────────────────────────
+
+1. Docker + Docker Compose
+   └ Pondasi utama. Semua service jalan di sini.
+   └ Docker = container ringan, isolasi bersih.
+
+2. Portainer (web UI Docker)
+   └ Pantau container dari browser.
+   └ gak perlu SSH tiap kali restart.
+
+3. Pi-hole atau AdGuard Home
+   └ Blokir iklan di seluruh jaringan rumah.
+   └ DNS server lokal — HP, laptop, smart TV bebas iklan.
+
+4. WireGuard VPN
+   └ Akses server dari luar rumah (HP/laptop).
+   └ Biar bisa cek Nextcloud, email, atau service lain.
+   └ Aman, cepat, portabel.
+
+5. Uptime Kuma
+   └ Monitoring: service mana yang mati, notifikasi ke Telegram.
+
+────────────────────────────
+TINGKAT 2 — PENYIMPANAN
+────────────────────────────
+
+6. Samba / NFS
+   └ File sharing di jaringan rumah.
+   └ Biar HP/Laptop bisa akses file dari server.
+
+7. FileBrowser
+   └ Web UI buat kelola file. Mirip Google Drive sederhana.
+
+8. Nextcloud (opsional, agak berat)
+   └ Google Drive versi self-hosted.
+   └ Sync file, kalender, kontak, foto.
+
+────────────────────────────
+TINGKAT 3 — SELF-HOSTED APPS
+────────────────────────────
+
+9. Mailcow (email server)
+   └ Email sendiri pakai domainmu.
+   └ SMTP/IMAP, webmail, anti-spam.
+   └ Cocok untuk 1–5 akun pribadi.
+
+10. Vaultwarden
+    └ Bitwarden self-hosted — simpan password.
+    └ Bisa diakses dari HP, laptop, browser.
+
+11. Jellyfin
+    └ Streaming film/musik ke TV atau HP.
+    └ Kalau kamu punya koleksi film.
+
+────────────────────────────
+TINGKAT 4 — DEVELOPMENT
+────────────────────────────
+
+12. Nginx Proxy Manager
+    └ Domain + SSL (HTTPS) otomatis.
+    └ Biar tiap service punya subdomain sendiri.
+    Contoh: mailcow.domain.com, nextcloud.domain.com
+
+13. PostgreSQL / MySQL (via Docker)
+    └ Database buat project development.
+    └ Bisa untuk belajar atau project sampingan.
+
+14. Gitea
+    └ Self-hosted GitHub versi ringan.
+    └ Buat nyimpen project coding pribadi.
+
+15. N8N
+    └ Automasi: auto-reply email, scraping, integrasi API.
+    └ Bisa berguna buat promosi rental juga.
+
+────────────────────────────
+OPSIONAL TAMBAHAN
+────────────────────────────
+
+16. Flame / Homarr
+    └ Dashboard halaman awal browser.
+    └ Berisi daftar semua service milikmu.
+
+17. Prometheus + Grafana
+    └ Monitoring server: suhu CPU, pemakaian RAM/disk.
+
+18. Duplicati / Restic
+    └ Backup data ke cloud (Google Drive, S3) secara otomatis.
+
+19. Heimdall
+    └ Halaman muka biar rapi akses ke semua service.
+
+────────────────────────────
+PRIORITAS MULAI
+────────────────────────────
+
+Minggu 1:
+□ Install Debian/Ubuntu Server
+□ Setup SSH
+□ Install Docker + Docker Compose
+□ Install Portainer + Pi-hole
+□ Setup WireGuard
+
+Minggu 2:
+□ Install Nginx Proxy Manager
+□ Siapin domain murah (Rp 100–200rb/tahun)
+□ Setup Samba/FileBrowser
+□ Install Uptime Kuma
+
+Minggu 3:
+□ Install Mailcow (kalau butuh email sendiri)
+□ Install Vaultwarden
+□ Backup config Docker
+
+Minggu 4:
+□ Install Nextcloud (kalau perlu)
+□ Install Jellyfin (kalau ada koleksi film)
+□ Setup automasi (N8N)
+
+────────────────────────────
+DOMAIN + DNS
+────────────────────────────
+
+Beli domain di Niagahoster / Domainesia / Cloudflare:
+• rumahkita.my.id (Rp 65rb/tahun — khusus WNI)
+• namakamu.xyz (Rp 20–30rb/tahun)
+
+DNS pakai Cloudflare (gratis):
+• otomatis proteksi DDoS
+• Tunnel bisa tanpa IP publik

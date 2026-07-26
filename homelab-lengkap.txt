@@ -1,0 +1,248 @@
+HOMELAB LENGKAP — Server, Smart Home & AI Agent
+══════════════════════════════════════════════════
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+A. HOMESERVER CORE — Level 1 (WAJIB)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+□ Docker + Docker Compose
+  Pondasi. Semua service jalan di sini.
+
+□ Portainer
+  UI Docker dari browser — gampang pantau container.
+
+□ Nginx Proxy Manager
+  Domain + SSL (HTTPS) otomatis. WAJIB biar semua service 
+  punya subdomain rapi. Contoh:
+  └ mail.domain.com → Mailcow
+  └ cloud.domain.com → Nextcloud  
+  └ ha.domain.com → Home Assistant
+  └ ai.domain.com → AI Agent
+
+□ Cloudflare Tunnel (alternatif NPM)
+  Kalau gak punya IP publik. Tunnel langsung dari Cloudflare.
+
+□ WireGuard VPN
+  Akses server dari luar rumah. Aman tanpa buka port.
+
+□ Uptime Kuma
+  Monitoring: service mati → notifikasi Telegram.
+
+□ Watchtower
+  Update container otomatis biar gak usah manual.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+B. PENYIMPANAN & FILE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+□ Samba / NFS
+  File sharing jaringan lokal.
+
+□ FileBrowser
+  Web UI file manager — upload/download lewat browser.
+
+□ Nextcloud
+  Google Drive versi self-hosted. 
+  Sync file + kalender + kontak + foto dari HP.
+
+□ Syncthing
+  Sync folder antar device langsung (HP-Laptop-Server).
+  Alternatif Nextcloud kalau cuma butuh sync file doang.
+
+□ Duplicati / Restic
+  Backup otomatis ke cloud (Google Drive, S3, Backblaze).
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+C. SMART HOME — Otomasi Rumah
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+□ Home Assistant (Core/OS via Docker)
+  ⭐ Pusat smart home. Linking semua device pintar.
+  └ Lampu, saklar, sensor suhu, CCTV
+  └ Otomasi: "sensor hujan → jemuran masuk"
+  └ Dashboard sendiri di HP
+
+□ ESPHome
+  Buat sensor sendiri pakai ESP32/ESP8266.
+  └ Sensor suhu kamar
+  └ Sensor kebocoran gas
+  └ Detektor gerak
+  └ Modal Rp 30–100rb per sensor
+
+□ Zigbee2MQTT + Zigbee Dongle
+  Untuk device Zigbee (sensor Xiaomi, Aqara, Philips Hue).
+  └ Dongle: Sonoff ZBDongle-P ~Rp 150rb
+  └ Lebih stabil dari WiFi
+
+□ Mosquitto (MQTT Broker)
+  Tulang punggung komunikasi antar device smart home.
+
+□ Node-RED
+  Automasi visual kayak flowchart.
+  └ "Kalau maghrib → lampu teras nyala"
+  └ "Kalau suhu >30°C → kipas nyala"
+
+□ Frigate NVR (CCTV AI)
+  Kamera RTSP → deteksi orang/mobil/hewan pake AI lokal.
+  WAJIB kalau pasang CCTV.
+
+□ Scrypted / Homebridge
+  Biar gak support (Xiaomi/Tuya) bisa masuk HomeKit.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+D. AI AGENT PRIBADI
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+□ Hermes Agent
+  Yang kamu pakai sekarang. Jalanin 24/7 di server.
+  └ Bot Telegram pribadi
+  └ Jadwal sholat, pengingat, catatan harian
+
+□ Ollama (LLM lokal)
+  Jalanin model AI tanpa internet (Mistral, Llama, Qwen).
+  └ Minimal 16GB RAM untuk model 7-8B
+  └ Cocok buat chat AI pribadi — privasi terjaga
+
+□ Open WebUI
+  UI kayak ChatGPT tapi pake Ollama lokal.
+  └ Akses dari HP laptop kapan aja
+
+□ N8N
+  Automasi workflow.
+  └ Auto-scrape harga kompetitor rental
+  └ Auto-reply WA dengan AI
+  └ Jadwal posting konten
+
+□ ComfyUI (optional)
+  Generate gambar pake AI lokal.
+  Butuh GPU, tapi bisa jalan di CPU (lambat).
+
+□ Whisper (STT lokal)
+  Ubah suara ke teks — buat catatan voice-to-text.
+
+□ Piper TTS (lokal)
+  Ubah teks ke suara — buat voice assistant rumah.
+
+┌──────────────────────────────────────────────┐
+│  KOMBINASI SMART HOME + AI:                  │
+│                                              │
+│  "Assalamualaikum" → Whisper → N8N            │
+│  → Hermes check jadwal → Piper TTS            │
+│  → "Waalaikumussalam. Jadwal maghrib 17.39"   │
+│  → Lampu otomatis nyala 5 menit sebelumnya     │
+└──────────────────────────────────────────────┘
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+E. DATABASE & INFRA
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+□ PostgreSQL + Adminer
+  Database utama buat project.
+
+□ InfluxDB + Grafana
+  └ Simpan data sensor rumah (suhu, kelembaban)
+  └ Grafana dashboard — visualisasi data realtime
+
+□ Redis
+  Cache, session, queue. Berguna kalau ada web app.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+F. MEDIA
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+□ Jellyfin
+  Netflix pribadi — streaming film, musik ke TV/HP.
+
+□ Immich
+  Google Photos self-hosted. Backup foto dari HP otomatis.
+  (Alternatif lebih modern dari Nextcloud buat foto)
+
+□ Prowlarr + Sonarr + Radarr + qBittorrent
+  (Koleksi digital — pinter pake, privasi dijaga)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+G. DEVELOPMENT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+□ Gitea / Forgejo
+  GitHub pribadi — simpan coding project.
+
+□ GitLab Runner
+  CI/CD — auto-deploy project dari repo.
+
+□ Code-Server (VS Code di browser)
+  Coding dari mana aja cukup pake browser HP/laptop.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+H. PENUNJANG
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+□ Heimdall / Flame / Homer
+  Dashboard halaman depan — daftar semua service.
+
+□ Bitwarden / Vaultwarden
+  Simpan password server & akun-akun.
+
+□ Prometheus + Node Exporter
+  Monitoring server: suhu CPU, RAM, disk, uptime.
+
+□ Traefik (alternatif NPM)
+  Reverse proxy + SSL otomatis + Docker native.
+
+────────────────────────────────────────────
+ESTIMASI RAM PER SERVICE
+────────────────────────────────────────────
+
+Service                     RAM estimasi
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Portainer                     ~50 MB
+Pi-hole / AdGuard             ~80 MB
+WireGuard                     ~20 MB
+Nginx Proxy Manager           ~60 MB
+FileBrowser                   ~20 MB
+Nextcloud                     ~500 MB (cukup berat)
+Syncthing                     ~80 MB
+Home Assistant Core           ~300–500 MB
+Zigbee2MQTT                   ~80 MB
+Mosquitto                     ~20 MB
+Node-RED                      ~100 MB
+Ollama (Mistral 7B)           ~4–6 GB ✱
+Open WebUI                    ~200 MB
+N8N                           ~200 MB
+PostgreSQL                    ~200 MB
+Jellyfin                      ~200 MB (tanpa transcoding)
+Immich                        ~500 MB
+Vaultwarden                   ~50 MB
+Grafana + InfluxDB            ~300 MB
+Uptime Kuma                   ~30 MB
+❄️ Total minimal             ~8 GB (tanpa Ollama)
+❄️ Total lengkap dg Ollama   ~16 GB (kalau jalanin AI lokal)
+
+────────────────────────────────────────────
+PRIORITAS KAMU (step by step)
+────────────────────────────────────────────
+
+Tahap 1 (8GB cukup):
+□ Docker + Portainer + NPM
+□ Pi-hole + WireGuard
+□ Uptime Kuma + Watchtower
+□ FileBrowser
+
+Tahap 2 (8GB cukup):
+□ Home Assistant + Mosquitto
+□ Node-RED
+□ Vaultwarden
+□ Syncthing / Immich
+
+Tahap 3 (8GB cukup):
+□ N8N (automasi marketing rental)
+□ Jellyfin
+□ Gitea + PostgreSQL
+
+Tahap 4 (butuh 16GB):
+□ Ollama + Open WebUI (AI lokal)
+□ Code-Server
+□ Grafana + InfluxDB
+
+Kalau nambah RAM jadi 16GB, semua service di atas jalan
+bersamaan. M715q kamu bisa upgrade ke 32GB maksimal.
