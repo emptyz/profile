@@ -11,7 +11,19 @@
 DOMAIN="${DOMAIN:-ishol.my.id}"
 TIMEZONE="${TIMEZONE:-Asia/Jakarta}"
 USER="${SUDO_USER:-${USER:-faishol}}"
-HDD_DEV="${HDD_DEV:-/dev/sda}"    # GANTI dengan device HDD kamu!
+
+# Auto-detect HDD — cari disk paling besar yang bukan system disk
+detect_hdd() {
+    local root_dev
+    root_dev=$(findmnt -n -o SOURCE / | sed 's/[0-9]*$//' | sed 's/p[0-9]*$//')
+    lsblk -dnlo NAME,SIZE,TYPE,MOUNTPOINT | grep "disk" | grep -v "^$(basename "$root_dev")" | sort -k2 -h -r | head -1 | awk '{print "/dev/"$1}'
+}
+HDD_DEV="${HDD_DEV:-$(detect_hdd)}"
+if [ -z "$HDD_DEV" ] || [ ! -b "$HDD_DEV" ]; then
+    warn "⚠️ HDD tidak terdeteksi otomatis!"
+    warn "Jalankan: lsblk → cari disk 1TB → lalu set: export HDD_DEV=/dev/sdX"
+    HDD_DEV="/dev/sdX"  # placeholder, script akan skip format
+fi
 
 set -e
 RED='\033[0;31m'; GREEN='\033[0;32m'; YELLOW='\033[1;33m'; CYAN='\033[0;36m'; NC='\033[0m'
@@ -42,7 +54,10 @@ ok "System updated"
 # ═══════════════════════════════════════════════
 log "${YELLOW}[2/13]${NC} HDD 1TB — Format & Mount"
 
-if [ -b "$HDD_DEV" ]; then
+# Install tools untuk partisi
+apt install -y -qq gdisk parted > /dev/null 2>&1
+
+if [ -b "$HDD_DEV" ] && [ "$HDD_DEV" != "/dev/sdX" ]; then
     warn "Memformat $HDD_DEV — semua data akan HILANG!"
     warn "Lanjut dalam 5 detik... Ctrl+C untuk batal"
     sleep 5
@@ -279,7 +294,7 @@ docker run -d --name portainer --restart always \
 # --- Traefik ⭐55k ---
 log "  → Traefik"
 mkdir -p ~/homelab/data/traefik
-cat << 'TRAEFIK' > ~/homelab/data/traefik/traefik.yml
+cat << TRAEFIK > ~/homelab/data/traefik/traefik.yml
 api:
   dashboard: true
   debug: false
@@ -330,7 +345,7 @@ docker run -d --name traefik --restart always \
 # --- Glance ⭐36k ---
 log "  → Glance dashboard"
 mkdir -p ~/homelab/data/glance
-cat << 'GLANCE' > ~/homelab/data/glance/glance.yml
+cat << GLANCE > ~/homelab/data/glance/glance.yml
 pages:
   - name: Homelab
     columns: 3
@@ -340,17 +355,17 @@ pages:
           - name: Services
             links:
               - text: Portainer
-                url: https://p.ishol.my.id
+                url: https://p.${DOMAIN}
               - text: Uptime Kuma
-                url: https://status.ishol.my.id
+                url: https://status.${DOMAIN}
               - text: N8N
-                url: https://n8n.ishol.my.id
+                url: https://n8n.${DOMAIN}
               - text: Immich
-                url: https://foto.ishol.my.id
+                url: https://foto.${DOMAIN}
               - text: Vaultwarden
-                url: https://pass.ishol.my.id
+                url: https://pass.${DOMAIN}
               - text: Traefik
-                url: https://traefik.ishol.my.id
+                url: https://traefik.${DOMAIN}
       - type: weather
       - type: uptime
 GLANCE
@@ -362,6 +377,17 @@ docker run -d --name glance --restart always \
 
 # --- AdGuard Home ⭐28k (lebih modern dari Pi-hole) ---
 log "  → AdGuard Home"
+
+# Pastikan port 53 tidak dipake systemd-resolved
+systemctl stop systemd-resolved 2>/dev/null || true
+systemctl disable systemd-resolved 2>/dev/null || true
+cat << 'EOF' > /etc/systemd/resolved.conf
+[Resolve]
+DNS=1.1.1.1
+DNSStubListener=no
+EOF
+systemctl restart systemd-resolved 2>/dev/null || true
+
 mkdir -p /mnt/data/adguard/work
 docker run -d --name adguard --restart always \
     -p 53:53/tcp -p 53:53/udp \
@@ -510,8 +536,8 @@ log "${YELLOW}[13/13]${NC} Cleanup"
 apt autoremove -y -qq > /dev/null 2>&1
 apt autoclean -qq > /dev/null 2>&1
 
-# Docker cleanup — hapus image yang gak dipakai
-docker system prune -af --volumes=false > /dev/null 2>&1 || true
+# Docker cleanup — hapus image yang gak dipakai (hati-hati)
+docker system prune -af --filter "until=24h" --volumes=false > /dev/null 2>&1 || true
 
 # Cron — auto cleanup mingguan
 cat << 'EOF' > /etc/cron.weekly/docker-cleanup
