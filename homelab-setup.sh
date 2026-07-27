@@ -255,6 +255,14 @@ ufw allow 9443/tcp > /dev/null
 ufw --force enable > /dev/null
 ok "Firewall active"
 
+# ─── Cockpit — Dashboard manajemen server via web ───
+log "  → Cockpit (Web Server Manager)"
+apt install -y -qq cockpit > /dev/null 2>&1
+systemctl enable cockpit.socket > /dev/null 2>&1
+systemctl start cockpit.socket
+ufw allow 9090/tcp > /dev/null 2>&1
+ok "Cockpit → https://$IP:9090 (login pakai user/password Ubuntu)"
+
 # ═══════════════════════════════════════════════
 # STEP 10: Direktori
 # ═══════════════════════════════════════════════
@@ -638,8 +646,9 @@ echo -e "${GREEN}═════════════════════
 echo ""
 echo -e " ${CYAN}Akses Lokal${NC}"
 echo -e " ─────────────────────────────────────────────────────"
-echo -e " Portainer          https://$IP:9443"
-echo -e " Traefik Dashboard  http://$IP:8082"
+echo -e " Cockpit (server)    https://$IP:9090"
+echo -e " Portainer           https://$IP:9443"
+echo -e " Traefik Dashboard   http://$IP:8082"
 echo -e " AdGuard Home       http://$IP:8053 (or :3000)"
 echo -e " Glance             http://$IP:8085"
 echo -e " Uptime Kuma        http://$IP:3001"
