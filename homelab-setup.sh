@@ -497,6 +497,48 @@ docker run -d --name filebrowser --restart always \
     -v ~/homelab/data/filebrowser:/database \
     filebrowser/filebrowser:latest > /dev/null 2>&1
 
+# --- Stirling PDF ⭐52k — Edit PDF online ---
+log "  → Stirling PDF"
+docker run -d --name stirling-pdf --restart always \
+    -p 8083:8080 \
+    -v ~/homelab/data/stirling-pdf:/usr/share/tesseract-ocr/4.00/tessdata \
+    -e DOCKER_ENABLE_SECURITY=false \
+    --network traefik-net \
+    frooodle/s-pdf:latest > /dev/null 2>&1
+
+# --- ntfy ⭐21k — Push notifications ke HP ---
+log "  → ntfy (push notifications)"
+mkdir -p ~/homelab/data/ntfy
+cat << 'NTFY' > ~/homelab/data/ntfy/server.yml
+base-url: https://notif.${DOMAIN}
+cache-file: /var/lib/ntfy/cache.db
+behind-proxy: true
+NTFY
+docker run -d --name ntfy --restart always \
+    -p 8084:80 \
+    -v ~/homelab/data/ntfy/server.yml:/etc/ntfy/server.yml \
+    -v ~/homelab/data/ntfy/cache:/var/lib/ntfy \
+    --network traefik-net \
+    binwiederhier/ntfy:latest > /dev/null 2>&1
+
+# --- Gitea ⭐48k — Git server (ringan) ---
+log "  → Gitea"
+mkdir -p ~/homelab/data/gitea
+docker run -d --name gitea --restart always \
+    -p 3002:3000 \
+    -v ~/homelab/data/gitea:/data \
+    --network traefik-net \
+    gitea/gitea:latest > /dev/null 2>&1
+
+# --- Vikunja ⭐5k — Task management ---
+log "  → Vikunja"
+mkdir -p ~/homelab/data/vikunja
+docker run -d --name vikunja --restart always \
+    -p 8087:80 \
+    -v ~/homelab/data/vikunja:/app/vikunja/files \
+    --network traefik-net \
+    vikunja/vikunja:latest > /dev/null 2>&1
+
 # --- Watchtower ⭐20k ---
 log "  → Watchtower"
 docker run -d --name watchtower --restart always \
@@ -511,7 +553,7 @@ ok "All services deployed"
 # ═══════════════════════════════════════════════
 log "${YELLOW}[12/13]${NC} Verifying services..."
 
-SERVICES="portainer traefik uptime-kuma vaultwarden n8n filebrowser adguard glance immich-server beszel watchtower"
+SERVICES="portainer traefik uptime-kuma vaultwarden n8n filebrowser adguard glance immich-server beszel watchtower stirling-pdf ntfy gitea vikunja"
 FAILED=""
 for s in $SERVICES; do
     if docker ps --format '{{.Names}}' | grep -q "^$s$"; then
@@ -595,38 +637,48 @@ echo -e "${GREEN}   🎉 HOMELAB v3 SELESAI! — Semua service siap ${NC}"
 echo -e "${GREEN}════════════════════════════════════════════════════════════════${NC}"
 echo ""
 echo -e " ${CYAN}Akses Lokal${NC}"
-echo -e " ─────────────────────────────────────────────────"
+echo -e " ─────────────────────────────────────────────────────"
 echo -e " Portainer          https://$IP:9443"
 echo -e " Traefik Dashboard  http://$IP:8082"
-echo -e " AdGuard Home       http://$IP:8053 (setup: :3000)"
+echo -e " AdGuard Home       http://$IP:8053 (or :3000)"
 echo -e " Glance             http://$IP:8085"
 echo -e " Uptime Kuma        http://$IP:3001"
 echo -e " Beszel             http://$IP:8086"
 echo -e " Vaultwarden        http://$IP:8080"
 echo -e " N8N                http://$IP:5678"
-echo -e " Immich (foto)      http://$IP:2283"
+echo -e " Immich             http://$IP:2283"
+echo -e " Stirling PDF       http://$IP:8083"
+echo -e " ntfy               http://$IP:8084"
+echo -e " Gitea              http://$IP:3002"
+echo -e " Vikunja            http://$IP:8087"
 echo -e " FileBrowser        http://$IP:8081"
 echo -e " CrowdSec Dashboard http://$IP:8088"
 echo ""
 echo -e " ${CYAN}Akses Domain (via Cloudflare Tunnel nanti)${NC}"
-echo -e " ─────────────────────────────────────────────────"
+echo -e " ─────────────────────────────────────────────────────"
 echo -e " p.$DOMAIN          → Portainer"
 echo -e " traefik.$DOMAIN    → Traefik Dashboard"
-echo -e " start.$DOMAIN      → Glance"
+echo -e " start.$DOMAIN      → Glance Dashboard"
 echo -e " status.$DOMAIN     → Uptime Kuma"
 echo -e " pass.$DOMAIN       → Vaultwarden"
 echo -e " n8n.$DOMAIN        → N8N"
 echo -e " foto.$DOMAIN       → Immich"
+echo -e " pdf.$DOMAIN        → Stirling PDF"
+echo -e " notif.$DOMAIN      → ntfy"
+echo -e " git.$DOMAIN        → Gitea"
+echo -e " tugas.$DOMAIN      → Vikunja"
 echo -e " files.$DOMAIN      → FileBrowser"
 echo -e " monitor.$DOMAIN    → Beszel"
 echo ""
 echo -e " ${YELLOW}📌 Langkah setelah ini:${NC}"
 echo -e " 1. Buka AdGuard: http://$IP:3000 → setup wizard"
 echo -e " 2. Buka Portainer: https://$IP:9443 → set password"
-echo -e " 3. Buka Vaultwarden: http://$IP:8080 → buat akun"
-echo -e " 4. Ganti password default:"
+echo -e " 3. Buka Vaultwarden: http://$IP:8080 → buat akun (signup dinyalakan)"
+echo -e " 4. Buka Gitea: http://$IP:3002 → buat akun + repo"
+echo -e " 5. Install ntfy di HP → Android: F-Droid / iOS: App Store"
+echo -e " 6. Ganti password default:"
 echo -e "    - CrowdSec: cscli dashboard setup --password \"password_baru\""
-echo -e " 5. Setup Cloudflare Tunnel untuk akses domain"
+echo -e " 7. Setup Cloudflare Tunnel untuk akses domain"
 echo -e ""
 echo -e " ${GREEN}Password admin:${NC}"
 echo -e "   AdGuard setup: http://$IP:3000"
